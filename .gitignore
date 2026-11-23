@@ -3,3 +3,7 @@ __pycache__/
 .env
 *.log
 .DS_Store
+
+# local notes and tool settings (repo is public)
+CLAUDE.md
+.claude/

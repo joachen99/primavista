@@ -12,7 +12,8 @@ s = s.replace('/*GEN_JS*/', (d / 'gen.js').read_text())
 s = s.replace('/*ABCJS*/', (d / 'vendor' / 'abcjs-basic-min.js').read_text())
 (d / 'index.html').write_text(s)
 
-ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png']
+ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'] + \
+    sorted('fonts/' + f.name for f in (d / 'fonts').glob('*.woff2'))
 h = hashlib.sha256()
 for a in ASSETS[1:]:
     h.update((d / a).read_bytes())
