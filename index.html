@@ -10,6 +10,23 @@
 <meta name="apple-mobile-web-app-title" content="Prima Vista">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<!-- launch screens shown while the home-screen app starts (icons/splash, 2x iPads, portrait + landscape) -->
+<link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/2048x2732.png">
+<link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2732x2048.png">
+<link rel="apple-touch-startup-image" media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/2064x2752.png">
+<link rel="apple-touch-startup-image" media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2752x2064.png">
+<link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/1668x2388.png">
+<link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2388x1668.png">
+<link rel="apple-touch-startup-image" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/1640x2360.png">
+<link rel="apple-touch-startup-image" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2360x1640.png">
+<link rel="apple-touch-startup-image" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/1620x2160.png">
+<link rel="apple-touch-startup-image" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2160x1620.png">
+<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/1536x2048.png">
+<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2048x1536.png">
+<link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/1488x2266.png">
+<link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2266x1488.png">
+<link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/1668x2224.png">
+<link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="icons/splash/2224x1668.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <title>Prima Vista — sight-reading &amp; theory for piano teachers</title>
 <style>
@@ -33,19 +50,61 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body { background: var(--desk); color: var(--ink); font: 14px/1.45 Inter, system-ui, sans-serif; }
-  header.top { display: flex; align-items: center; gap: 28px; padding: 14px 28px; border-bottom: 1px solid var(--line); background: var(--paper); position: sticky; top: 0; z-index: 5; }
-  .brand { display: flex; align-items: baseline; gap: 10px; }
-  .brand h1 { font: 600 22px/1 Fraunces, Georgia, serif; margin: 0; letter-spacing: -0.01em; }
-  .brand h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
-  .brand .tag { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 2px 8px; }
-  nav.tabs { display: flex; gap: 4px; }
-  nav.tabs button { font: 500 14px Inter, sans-serif; background: none; border: 0; padding: 8px 14px; border-radius: 8px; color: var(--muted); cursor: pointer; }
-  nav.tabs button[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
-  nav.tabs button:hover { color: var(--ink); }
-
-  main { display: grid; grid-template-columns: 300px 1fr; gap: 28px; padding: 28px; max-width: 1320px; margin: 0 auto; align-items: start; }
-  aside { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; position: sticky; top: calc(84px + env(safe-area-inset-top)); max-height: calc(100vh - 100px - env(safe-area-inset-top)); overflow-y: auto; overscroll-behavior: contain; }
-  aside h2 { font: 600 17px Fraunces, Georgia, serif; margin: 0 0 16px; }
+  /* ---------- app shell: top bar, settings panel, content, tab bar ---------- */
+  html, body { height: 100%; }
+  body { overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-text-size-adjust: 100%; }
+  input, select, textarea { -webkit-user-select: text; user-select: text; }
+  .app { display: flex; flex-direction: column; height: 100%; height: 100dvh; }
+  .bar { flex: none; display: flex; align-items: center; gap: 8px; min-height: 58px; padding: calc(7px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) 7px calc(12px + env(safe-area-inset-left)); background: rgba(251,248,242,.94); -webkit-backdrop-filter: saturate(1.4) blur(18px); backdrop-filter: saturate(1.4) blur(18px); border-bottom: 1px solid var(--line); z-index: 6; }
+  .bar-title { flex: 1; min-width: 0; padding-left: 4px; }
+  .bar-title h1 { font: 600 19px/1.2 Fraunces, Georgia, serif; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-title .sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-actions { display: flex; gap: 4px; align-items: center; flex: none; }
+  .ibtn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 44px; height: 44px; padding: 0 10px; border: 0; border-radius: 12px; background: none; color: var(--accent); font: 500 15px Inter, sans-serif; cursor: pointer; white-space: nowrap; transition: background-color .15s, transform .1s; }
+  .ibtn svg { width: 22px; height: 22px; flex: none; }
+  .ibtn.pill { background: var(--accent); color: #fff; padding: 0 18px 0 14px; border-radius: 99px; font-weight: 600; }
+  .ibtn.pill svg { width: 18px; height: 18px; }
+  .ibtn[data-playing="1"] { background: var(--ink); color: #fff; }
+  .ibtn[aria-pressed="true"] { background: var(--accent-soft); }
+  .ibtn:active { background: var(--accent-soft); transform: scale(.96); }
+  .ibtn.pill:active { background: var(--accent); filter: brightness(.9); }
+  @media (max-width: 1000px) { .ibtn .opt { display: none; } }
+  .body { flex: 1; min-height: 0; display: flex; position: relative; }
+  .panel { flex: none; width: 300px; background: var(--paper); border-right: 1px solid var(--line); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 18px 18px calc(24px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left)); transition: margin-left .3s cubic-bezier(.2,.8,.2,1), transform .3s cubic-bezier(.2,.8,.2,1); }
+  .app.panel-closed .panel, .app.no-panel .panel { margin-left: -300px; }
+  .app.no-panel .panel-toggle { display: none; }
+  .content { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: #fff; }
+  .scrim { display: none; }
+  @media (max-width: 1099px) {
+    .panel { position: absolute; top: 0; bottom: 0; left: 0; z-index: 5; margin-left: 0 !important; box-shadow: 0 0 40px rgba(31,27,22,.2); }
+    .app.panel-closed .panel, .app.no-panel .panel { transform: translateX(-105%); box-shadow: none; }
+    .scrim { display: block; position: absolute; inset: 0; z-index: 4; background: rgba(31,27,22,.22); transition: opacity .3s; }
+    .app.panel-closed .scrim, .app.no-panel .scrim { opacity: 0; pointer-events: none; }
+  }
+  .tabbar { flex: none; display: flex; justify-content: center; gap: 6px; padding: 5px calc(10px + env(safe-area-inset-right)) calc(5px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left)); background: rgba(251,248,242,.94); -webkit-backdrop-filter: saturate(1.4) blur(18px); backdrop-filter: saturate(1.4) blur(18px); border-top: 1px solid var(--line); z-index: 6; }
+  .tabbar button { flex: 0 1 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 48px; border: 0; background: none; border-radius: 12px; color: var(--muted); font: 500 11px Inter, sans-serif; cursor: pointer; transition: color .15s, background-color .15s; }
+  .tabbar svg { width: 25px; height: 25px; }
+  .tabbar button[aria-selected="true"] { color: var(--accent); }
+  .tabbar button:active { background: var(--accent-soft); }
+  @media (min-width: 700px) { .tabbar button { flex-direction: row; gap: 8px; font-size: 14px; } .tabbar svg { width: 23px; height: 23px; } .tabbar button[aria-selected="true"] { background: var(--accent-soft); } }
+  .view-in { animation: viewIn .24s ease-out; }
+  .swipe-next { animation: swipeNext .28s cubic-bezier(.2,.8,.2,1); }
+  .swipe-prev { animation: swipePrev .28s cubic-bezier(.2,.8,.2,1); }
+  @keyframes viewIn { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes swipeNext { from { opacity: 0; transform: translateX(60px); } }
+  @keyframes swipePrev { from { opacity: 0; transform: translateX(-60px); } }
+  #splash { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: var(--desk); transition: opacity .35s ease; }
+  #splash img { width: 112px; height: 112px; border-radius: 25px; box-shadow: 0 10px 30px rgba(60,40,20,.18); }
+  #splash.out { opacity: 0; pointer-events: none; }
+  .settings { max-width: 640px; margin: 0 auto; padding: 28px 20px 60px; }
+  .group-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 22px 0 8px 14px; }
+  .group { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .cell { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 50px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 15px; }
+  .cell:first-child { border-top: 0; }
+  .cell .muted { color: var(--muted); font-size: 14px; text-align: right; }
+  .cell .seg { flex: 1; max-width: 320px; }
+  #view-set { background: var(--desk); min-height: 100%; }
+  .panel h2 { font: 600 17px Fraunces, Georgia, serif; margin: 0 0 16px; }
   .field { margin-bottom: 16px; }
   .field > label, .field > .lbl { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
   .seg { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
@@ -69,7 +128,8 @@
   .code-row input { font-family: ui-monospace, Menlo, monospace; letter-spacing: .05em; }
   .code-row .btn { flex: none; }
 
-  .sheet { background: #fff; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 30px rgba(60,40,20,.08); padding: 44px 52px 52px; min-height: 900px; }
+  .sheet { background: #fff; padding: 26px 40px 60px; max-width: 1120px; margin: 0 auto; }
+  @media screen { #sr-sheet .sheet-head, #th-sheet .sheet-head { display: none; } }
   .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1.5px solid var(--ink); padding-bottom: 10px; margin-bottom: 26px; gap: 20px; }
   .sheet-head h2 { font: 600 26px/1.1 Fraunces, Georgia, serif; margin: 0; }
   .sheet-head .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
@@ -106,7 +166,6 @@
 
   .empty, .err { color: var(--muted); padding: 40px 0; text-align: center; }
   .err { color: var(--accent); }
-  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 0 0 30px; }
   [hidden] { display: none !important; }
 
   /* ---------- quiz ---------- */
@@ -160,39 +219,32 @@
   .rv-txt .right { color: #2f5d3a; font-weight: 600; }
   @media (max-width: 900px) { .qz-choices { grid-template-columns: 1fr; } .rv { grid-template-columns: 30px 1fr; } .rv-txt { grid-column: 2; } .res-topic { grid-template-columns: 100px 1fr 50px; } }
 
-  /* iPad: touch-friendly controls, room for the home indicator and the notch */
+  /* iPad: touch-friendly controls, iOS-style switches, press feedback */
   button, select, input, label.check { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  header.top { padding-top: calc(14px + env(safe-area-inset-top)); padding-left: calc(28px + env(safe-area-inset-left)); padding-right: calc(28px + env(safe-area-inset-right)); }
-  footer { padding-bottom: calc(30px + env(safe-area-inset-bottom)); }
-  .btn.print { width: 100%; margin-top: 8px; }
+  button { transition: transform .1s, background-color .15s, border-color .15s; }
+  .btn:active, .seg button:active, .qz-choice:active { transform: scale(.97); }
+  @media (hover: none) { .btn:hover, .qz-choice:hover { border-color: var(--line); } .btn.primary:hover { filter: none; } }
+  input[type=checkbox] { -webkit-appearance: none; appearance: none; flex: none; width: 46px; height: 28px; margin: 0; border-radius: 99px; background: #ddd5c7; position: relative; cursor: pointer; transition: background-color .2s; }
+  input[type=checkbox]::after { content: ''; position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .22s cubic-bezier(.2,.8,.2,1); }
+  input[type=checkbox]:checked { background: var(--accent); }
+  input[type=checkbox]:checked::after { transform: translateX(18px); }
+  .check { flex-direction: row-reverse; justify-content: space-between; min-height: 36px; }
   @media (pointer: coarse) {
     .seg button { padding: 11px 0; font-size: 14px; }
-    .btn { min-height: 40px; }
-    .btn.small { min-height: 36px; padding: 6px 12px; }
-    select, input[type=text] { min-height: 40px; font-size: 16px; }
-    label.check { padding: 4px 0; }
-  }
-  @media (max-width: 1100px) {
-    main { grid-template-columns: 250px 1fr; gap: 18px; padding: 18px; }
-    aside { padding: 16px; }
-    .sheet { padding: 30px 28px 36px; min-height: 0; }
+    .btn { min-height: 44px; }
+    .btn.small { min-height: 40px; padding: 6px 12px; }
+    select, input[type=text] { min-height: 42px; font-size: 16px; }
   }
   @media (max-width: 700px) {
-    main { grid-template-columns: 1fr; padding: 16px; }
-    aside { position: static; max-height: none; overflow: visible; }
-    header.top { padding: 12px 16px; gap: 14px; flex-wrap: wrap; }
-    .sheet { padding: 24px 18px; min-height: 0; }
+    .sheet { padding: 20px 16px 40px; }
     .qgrid { grid-template-columns: repeat(2, 1fr); }
+    .bar-title .sub { display: none; }
   }
   @media print {
-    body { background: #fff; }
-    header.top, aside, footer, .play, .no-print { display: none !important; }
-    main { display: block; padding: 0; max-width: none; }
-    .sheet { box-shadow: none; padding: 0; min-height: 0; }
+    html, body, .app, .body, .content { display: block; height: auto; overflow: visible; background: #fff; }
+    .bar, .panel, .scrim, .tabbar, #splash, .play, .no-print { display: none !important; }
+    .sheet { padding: 0; max-width: none; }
   }
-  /* --- v3 additions --- */
-  .lang { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
-  .lang select { width: auto; padding: 5px 8px; }
   .sweep { position: absolute; top: 0; bottom: 0; pointer-events: none; background: linear-gradient(90deg, #fff 0, #fff calc(100% - 14px), rgba(255,255,255,.55) 100%); }
   .cursor { position: absolute; top: 4px; bottom: 4px; width: 2px; margin-left: -1px; background: var(--accent); border-radius: 2px; pointer-events: none; box-shadow: 0 0 0 3px rgba(122,46,46,.12); }
   .item-staff { overflow-x: auto; }
@@ -202,24 +254,16 @@
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="brand"><h1>Prima <em>Vista</em></h1><span class="tag" data-t="prototype"></span></div>
-  <nav class="tabs" role="tablist">
-    <button role="tab" id="tab-sr" aria-selected="true" data-view="sr" data-t="tabSr"></button>
-    <button role="tab" id="tab-th" aria-selected="false" data-view="th" data-t="tabTh"></button>
-  </nav>
-  <label class="lang"><span data-t="language"></span>
-    <select id="lang">
-      <option value="en">English</option>
-      <option value="nb">Norsk</option>
-    </select>
-  </label>
-</header>
-
-<main>
-  <!-- ============ SIGHT-READING ============ -->
-  <aside id="ctl-sr">
-    <h2 data-t="srTitle"></h2>
+<div id="splash"><img src="icons/apple-touch-icon.png" alt=""></div>
+<div class="app" id="app">
+  <header class="bar">
+    <button class="ibtn panel-toggle" id="panel-toggle" data-t-aria="panelBtn"><svg viewBox="0 0 24 24"><use href="#i-sidebar"/></svg></button>
+    <div class="bar-title"><h1 id="bar-title"></h1><div class="sub" id="bar-sub"></div></div>
+    <div class="bar-actions" id="bar-actions"></div>
+  </header>
+  <div class="body">
+    <aside class="panel" id="panel">
+      <div id="ctl-sr">
     <div class="field">
       <span class="lbl" data-t="level"></span>
       <div class="seg" id="sr-level"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button></div>
@@ -239,7 +283,6 @@
       <div class="seg" id="sr-bars"><button data-v="4">4</button><button data-v="8">8</button><button data-v="12">12</button><button data-v="16">16</button></div>
     </div>
     <button class="btn primary" id="sr-go" data-t="newEx"></button>
-    <button class="btn print" data-t="print"></button>
     <div class="divider"></div>
     <div class="field">
       <label for="sr-tempo"><span data-t="tempo"></span> · <span id="sr-tempo-v"></span></label>
@@ -259,17 +302,8 @@
       <div class="code-row"><input type="text" id="sr-code" inputmode="numeric" maxlength="6"><button class="btn small" id="sr-load" data-t="load"></button></div>
       <div class="hint" data-t="codeHint"></div>
     </div>
-  </aside>
-  <section id="view-sr">
-    <div class="sheet" id="sr-sheet"><div class="empty">…</div></div>
-  </section>
-
-  <!-- ============ THEORY ============ -->
-  <aside id="ctl-th" hidden>
-    <h2 data-t="thTitle"></h2>
-    <div class="field">
-      <div class="seg" id="th-mode"><button data-v="ws" data-t="modeWs"></button><button data-v="qz" data-t="modeQz"></button></div>
-    </div>
+      </div>
+      <div id="ctl-th" hidden>
     <div id="th-ws-ctl">
       <div class="field">
         <label for="th-topic" data-t="topic"></label>
@@ -294,7 +328,6 @@
       <div class="field"><span class="lbl" data-t="questions"></span>
         <div class="seg" id="th-count"><button data-v="8">8</button><button data-v="12">12</button><button data-v="16">16</button><button data-v="20">20</button></div></div>
       <button class="btn primary" id="th-go" data-t="newWs"></button>
-      <button class="btn print" data-t="print"></button>
       <div class="divider"></div>
       <label class="check"><input type="checkbox" id="th-answers"> <span data-t="showKey"></span></label>
       <div class="field" style="margin-top:16px">
@@ -333,14 +366,54 @@
         <div class="hint" data-t="qzCodeHint"></div>
       </div>
     </div>
-  </aside>
-  <section id="view-th" hidden>
-    <div class="sheet" id="th-sheet"></div>
-    <div class="sheet" id="qz-sheet" hidden></div>
-  </section>
-</main>
-<footer data-t="footer"></footer>
-
+      </div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+    <main class="content" id="content">
+      <section id="view-sr">
+        <div class="sheet" id="sr-sheet"><div class="empty">…</div></div>
+      </section>
+      <section id="view-th" hidden>
+        <div class="sheet" id="th-sheet"></div>
+        <div class="sheet" id="qz-sheet" hidden></div>
+      </section>
+      <section id="view-set" hidden>
+        <div class="settings">
+          <div class="group-title" data-t="language"></div>
+          <div class="group"><div class="cell"><div class="seg" id="set-lang"><button data-v="en">English</button><button data-v="nb">Norsk</button></div></div></div>
+          <div class="group-title" id="install-title" data-t="installTitle"></div>
+          <div class="group" id="install-group"><div class="cell"><span data-t="installTxt"></span></div></div>
+          <div class="group-title" data-t="about"></div>
+          <div class="group">
+            <div class="cell"><span>Prima Vista</span><span class="muted" data-t="aboutTxt"></span></div>
+            <div class="cell"><span data-t="privacy"></span><span class="muted" data-t="privacyTxt"></span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <nav class="tabbar" id="tabbar" role="tablist">
+    <button role="tab" data-view="sr"><svg viewBox="0 0 24 24"><use href="#i-note"/></svg><span data-t="tabSr"></span></button>
+    <button role="tab" data-view="ws"><svg viewBox="0 0 24 24"><use href="#i-tasks"/></svg><span data-t="tabWs"></span></button>
+    <button role="tab" data-view="qz"><svg viewBox="0 0 24 24"><use href="#i-exam"/></svg><span data-t="tabQz"></span></button>
+    <button role="tab" data-view="set"><svg viewBox="0 0 24 24"><use href="#i-gear"/></svg><span data-t="tabSet"></span></button>
+  </nav>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="i-sidebar" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9.5 4v16M5.5 8h1.5M5.5 11h1.5"/></g>
+    <g id="i-note" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5.5l11-2.5v12.5"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="15.5" r="2.6"/><path d="M9 9.5l11-2.5"/></g>
+    <g id="i-tasks" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></g>
+    <g id="i-exam" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="16.5" rx="2.5"/><path d="M9 4.5V3h6v1.5"/><path d="M8.5 13l2.5 2.5 4.5-5"/></g>
+    <g id="i-gear" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></g>
+    <g id="i-play" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></g>
+    <g id="i-stop" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></g>
+    <g id="i-listen" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></g>
+    <g id="i-new" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></g>
+    <g id="i-print" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/></g>
+    <g id="i-eye" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></g>
+  </defs>
+</svg>
 <script>/* Prima Vista — music material generators (sight-reading + theory).
    Pure logic: produces ABC notation strings plus playback event data. */
 (function (root) {
@@ -1139,7 +1212,9 @@
   // ================= TRANSLATIONS =================
   const T = {
     en: {
-      prototype: 'Prototype', tabSr: 'Sight-reading', tabTh: 'Theory', language: 'Language',
+      tabSr: 'Sight-reading', tabWs: 'Tasks', tabQz: 'Exam', tabSet: 'Settings', language: 'Language', panelBtn: 'Show or hide options', newShort: 'New', answers: 'Answers',
+      installTitle: 'Install', installTxt: 'Open this page in Safari, tap Share, then Add to Home Screen. Prima Vista then opens like an app and works offline.',
+      about: 'About', aboutTxt: 'Sight-reading and theory for piano teachers', privacy: 'Privacy', privacyTxt: 'No accounts, no tracking. Settings stay on this device.',
       srTitle: 'Sight-reading', level: 'Level', hands: 'Hands', both: 'Both', right: 'Right', left: 'Left', key: 'Key', time: 'Time', auto: 'Auto', major: 'Major', minor: 'Minor',
       length: 'Length (bars)', newEx: 'New exercise', tempo: 'Tempo', countIn: 'One-bar count-in',
       ptTitle: 'Play-through', hideMusic: 'Hide the music', hideLine: 'As the line passes', hideBar: 'Bar by bar', hideOff: "Don't hide", metronome: 'Metronome', playAlong: 'Play the music along',
@@ -1147,7 +1222,7 @@
       sheetCode: 'Sheet code', load: 'Load', codeHint: 'Same settings + same code = the same sheet.',
       handsTxt: { both: 'Hands together', rh: 'Right hand', lh: 'Left hand' }, srSub: 'Level {l} · {h} · {n} bars', code: 'Code',
       srInstr: 'Before playing: name the key and time signature, find the highest and lowest notes, and tap the rhythm once.',
-      listen: '▶ Listen', through: '● Play-through', stop: '■ Stop', countInN: 'Count-in {n}', barN: 'Bar {a} / {b}', done: 'Done ✓',
+      listen: 'Listen', through: 'Play-through', stop: 'Stop', countInN: 'Count-in {n}', barN: 'Bar {a} / {b}', done: 'Done ✓',
       blurbs: { 1: 'Five-finger position · C major · 4/4 · mostly half and whole notes, steps and thirds', 2: 'Five-finger position · C, G and F major · whole, half and quarter notes', 3: 'Five-finger position · up to 2 sharps/flats, minor keys · eighth notes', 4: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · broken-chord left hand', 5: 'Up to 4 sharps/flats · 6/8 time · rests · leaps up to a sixth', 6: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass · leaps to the octave' },
       thTitle: 'Theory', modeWs: 'Tasks', modeQz: 'Exam', topic: 'Topic', topics: 'Topics',
       t_notes: 'Note names', t_intervals: 'Intervals', t_keys: 'Keys', t_triads: 'Triads', t_scales: 'Scales', t_mixed: 'Mixed',
@@ -1171,11 +1246,13 @@
       results: 'Results', timeUsed: 'Time used', timeRanOut: ' (time ran out)', grades: ['Distinction', 'Merit', 'Pass', 'Not passed yet'], thresholds: 'Pass 66% · Merit 80% · Distinction 90%',
       retry: 'Try the same exam again', newExam: 'New exam', showAll: 'Show all questions', showWrong: 'Show mistakes only', noMistakes: 'No mistakes. Every answer was correct.',
       yourAnswer: 'Your answer', correct: 'Correct', notAnswered: 'Not answered', pct: '{n}%',
-      footer: 'Prima Vista prototype · every sheet is generated fresh', print: 'Print',
+      print: 'Print',
       libErr: 'The notation library could not load. Check your connection and reload.',
     },
     nb: {
-      prototype: 'Prototype', tabSr: 'Prima vista', tabTh: 'Teori', language: 'Språk',
+      tabSr: 'Prima vista', tabWs: 'Oppgaver', tabQz: 'Prøve', tabSet: 'Innstillinger', language: 'Språk', panelBtn: 'Vis eller skjul valg', newShort: 'Ny', answers: 'Fasit',
+      installTitle: 'Installer', installTxt: 'Åpne siden i Safari, trykk Del og så Legg til på Hjem-skjerm. Da åpnes Prima Vista som en app og virker uten nett.',
+      about: 'Om', aboutTxt: 'Prima vista og teori for pianolærere', privacy: 'Personvern', privacyTxt: 'Ingen kontoer, ingen sporing. Innstillingene lagres bare på denne enheten.',
       srTitle: 'Prima vista', level: 'Nivå', hands: 'Hender', both: 'Begge', right: 'Høyre', left: 'Venstre', key: 'Toneart', time: 'Taktart', auto: 'Automatisk', major: 'Dur', minor: 'Moll',
       length: 'Lengde (takter)', newEx: 'Ny øvelse', tempo: 'Tempo', countIn: 'Inntelling (én takt)',
       ptTitle: 'Spill gjennom', hideMusic: 'Skjul notene', hideLine: 'Når linjen passerer', hideBar: 'Takt for takt', hideOff: 'Ikke skjul', metronome: 'Metronom', playAlong: 'Spill musikken samtidig',
@@ -1183,7 +1260,7 @@
       sheetCode: 'Arkkode', load: 'Hent', codeHint: 'Samme innstillinger + samme kode = samme ark.',
       handsTxt: { both: 'Begge hender', rh: 'Høyre hånd', lh: 'Venstre hånd' }, srSub: 'Nivå {l} · {h} · {n} takter', code: 'Kode',
       srInstr: 'Før du spiller: Finn toneart og taktart, finn høyeste og laveste tone, og klapp rytmen én gang.',
-      listen: '▶ Lytt', through: '● Spill gjennom', stop: '■ Stopp', countInN: 'Inntelling {n}', barN: 'Takt {a} / {b}', done: 'Ferdig ✓',
+      listen: 'Lytt', through: 'Spill gjennom', stop: 'Stopp', countInN: 'Inntelling {n}', barN: 'Takt {a} / {b}', done: 'Ferdig ✓',
       blurbs: { 1: 'Femfingerposisjon · C-dur · 4/4 · mest halv- og helnoter, trinn og terser', 2: 'Femfingerposisjon · C-, G- og F-dur · hel-, halv- og fjerdedelsnoter', 3: 'Femfingerposisjon · opptil 2 ♯/♭, molltonearter · åttendedeler', 4: 'Posisjonsskifter · opptil 3 ♯/♭ · punkterte rytmer · brutte akkorder i venstre hånd', 5: 'Opptil 4 ♯/♭ · 6/8-takt · pauser · sprang opptil sekst', 6: 'Opptil 5 ♯/♭ · sekstendedeler · Alberti-bass · sprang opptil oktav' },
       thTitle: 'Teori', modeWs: 'Oppgaver', modeQz: 'Prøve', topic: 'Emne', topics: 'Emner',
       t_notes: 'Notenavn', t_intervals: 'Intervaller', t_keys: 'Tonearter', t_triads: 'Treklanger', t_scales: 'Skalaer', t_mixed: 'Blandet',
@@ -1207,7 +1284,7 @@
       results: 'Resultat', timeUsed: 'Brukt tid', timeRanOut: ' (tiden gikk ut)', grades: ['Meget godt bestått', 'Godt bestått', 'Bestått', 'Ikke bestått ennå'], thresholds: 'Bestått 66 % · Godt bestått 80 % · Meget godt bestått 90 %',
       retry: 'Ta samme prøve igjen', newExam: 'Ny prøve', showAll: 'Vis alle spørsmål', showWrong: 'Vis bare feil', noMistakes: 'Ingen feil. Alle svarene var riktige.',
       yourAnswer: 'Ditt svar', correct: 'Riktig svar', notAnswered: 'Ikke besvart', pct: '{n} %',
-      footer: 'Prima Vista-prototype · hvert ark lages på nytt', print: 'Skriv ut',
+      print: 'Skriv ut',
       libErr: 'Notebiblioteket kunne ikke lastes. Sjekk nettforbindelsen og last inn siden på nytt.',
     },
   };
@@ -1239,6 +1316,7 @@
   function applyStatic() {
     document.documentElement.lang = S.lang === 'en' ? 'en' : 'nb';
     document.querySelectorAll('[data-t]').forEach((el) => { el.textContent = t(el.dataset.t); });
+    document.querySelectorAll('[data-t-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
     document.querySelectorAll('#qz-time option').forEach((o) => { if (o.value !== '0') o.textContent = t('minutes', { n: o.value }); });
     fillKeys();
     levelHint(); topicHint();
@@ -1257,16 +1335,75 @@
     sync();
   }
 
-  // ---------- tabs ----------
-  function showView(v) {
-    S.view = v; save();
-    document.querySelectorAll('nav.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
-    $('ctl-sr').hidden = v !== 'sr'; $('view-sr').hidden = v !== 'sr';
-    $('ctl-th').hidden = v !== 'th'; $('view-th').hidden = v !== 'th';
-    Player.stop();
-    if (v === 'th') applyThMode();
+  // ---------- app shell: views (tab bar), options panel, top bar ----------
+  const app = $('app');
+  const VIEWS = ['sr', 'ws', 'qz', 'set'];
+  const narrow = () => window.matchMedia('(max-width: 1099px)').matches;
+  // on iPad landscape the options panel stays docked (remembered); in portrait it slides over the music
+  function setPanel(open) {
+    if (!narrow()) { S.panelOpen = open; save(); }
+    app.classList.toggle('panel-closed', !open);
+    $('panel-toggle').setAttribute('aria-pressed', String(open));
   }
-  document.querySelector('nav.tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) showView(b.dataset.view); });
+  const panelIsOpen = () => !app.classList.contains('panel-closed');
+  $('panel-toggle').addEventListener('click', () => setPanel(!panelIsOpen()));
+  $('scrim').addEventListener('click', () => setPanel(false));
+  const closePanelIfOverlay = () => { if (narrow()) setPanel(false); };
+
+  function showView(v, anim) {
+    if (v === 'th') v = S.thMode === 'qz' ? 'qz' : 'ws'; // older saved state
+    if (!VIEWS.includes(v)) v = 'sr';
+    S.view = v; if (v === 'ws' || v === 'qz') S.thMode = v; save();
+    document.querySelectorAll('#tabbar button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
+    const th = v === 'ws' || v === 'qz';
+    $('ctl-sr').hidden = v !== 'sr'; $('ctl-th').hidden = !th; $('th-ws-ctl').hidden = v !== 'ws'; $('th-qz-ctl').hidden = v !== 'qz';
+    $('view-sr').hidden = v !== 'sr'; $('view-th').hidden = !th; $('th-sheet').hidden = v !== 'ws'; $('qz-sheet').hidden = v !== 'qz'; $('view-set').hidden = v !== 'set';
+    app.classList.toggle('no-panel', v === 'set');
+    Player.stop();
+    if (v === 'ws' && !$('th-sheet').childElementCount) renderTheory();
+    if (v === 'qz' && !Q) quizIntro();
+    updateBar();
+    $('content').scrollTop = 0;
+    if (anim) animate($('view-' + (th ? 'th' : v)), 'view-in');
+  }
+  function animate(el, cls) { ['view-in', 'swipe-next', 'swipe-prev'].forEach((c) => el.classList.remove(c)); void el.offsetWidth; el.classList.add(cls); }
+  $('tabbar').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && b.dataset.view !== S.view) showView(b.dataset.view, true); });
+
+  const ICON = (id) => '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-' + id + '"/></svg>';
+  // label hidden on narrow screens when opt = true (icon only), always shown otherwise
+  const ibtn = (act, icon, label, cls, opt, extra) => '<button class="ibtn ' + (cls || '') + '" data-act="' + act + '" aria-label="' + esc(label) + '"' + (extra || '') + '>' + ICON(icon) + '<span' + (opt ? ' class="opt"' : '') + '>' + esc(label) + '</span></button>';
+  const playInner = (mode, playing) => ICON(playing ? 'stop' : mode === 'through' ? 'play' : 'listen') + '<span' + (mode === 'through' ? '' : ' class="opt"') + '>' + esc(playing ? t('stop') : t(mode)) + '</span>';
+  function updateBar() {
+    const v = S.view; let title = '', sub = '', acts = '';
+    if (v === 'sr') {
+      const ex = currentSet[0];
+      title = t('tabSr');
+      sub = t('srSub', { l: S.level, h: L().handsTxt[S.hands], n: S.bars }) + (ex ? ' · ' + N().keyName(ex.key.tl, ex.key.ta, ex.key.minor) + ' · ' + ex.meterId : '') + ' · ' + t('code') + ' ' + S.srSeed;
+      acts = ibtn('print', 'print', t('print'), '', true) + ibtn('new', 'new', t('newShort'), '', true) +
+        '<button class="ibtn play" data-act="listen" data-mode="listen" aria-label="' + esc(t('listen')) + '">' + playInner('listen', false) + '</button>' +
+        '<button class="ibtn pill play" data-act="through" data-mode="through" aria-label="' + esc(t('through')) + '">' + playInner('through', false) + '</button>';
+    } else if (v === 'ws') {
+      title = topicTitle(S.topic);
+      sub = t(S.diff) + (S.topic === 'keys' || S.topic === 'scales' ? '' : ' · ' + L().clefSub[S.clef]) + ' · ' + t('code') + ' ' + S.thSeed;
+      acts = ibtn('answers', 'eye', t('answers'), '', true, ' aria-pressed="' + S.answers + '"') + ibtn('print', 'print', t('print'), '', true) + ibtn('new', 'new', t('newShort'), 'pill');
+    } else if (v === 'qz') {
+      title = t('qzTitle');
+      sub = settingsLine(curSettings());
+      acts = ibtn('newqz', 'new', t('newExam'), 'pill');
+    } else title = t('tabSet');
+    $('bar-title').textContent = title; $('bar-sub').textContent = sub;
+    $('bar-actions').innerHTML = acts;
+  }
+  $('bar-actions').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const a = b.dataset.act;
+    if (a === 'through') Player.through(currentSet[0], 0, b);
+    else if (a === 'listen') Player.play(currentSet[0], b);
+    else if (a === 'new') { if (S.view === 'sr') srStep(1, true); else { S.thSeed = newSeed(); save(); renderTheory(); animate($('th-sheet'), 'swipe-next'); } }
+    else if (a === 'print') { Player.stop(); window.print(); }
+    else if (a === 'answers') setAnswers(!S.answers);
+    else if (a === 'newqz') startQuiz(newSeed());
+  });
 
   // ---------- notation ----------
   const abcReady = () => typeof window.ABCJS !== 'undefined';
@@ -1313,7 +1450,7 @@
       g.gain.setValueAtTime(0.0001, tt); g.gain.linearRampToValueAtTime(0.12, tt + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.05);
       o.connect(g); g.connect(this.master); o.start(tt); o.stop(tt + 0.06); this.nodes.push(o);
     },
-    setBtn(btn) { this.btn = btn; btn.dataset.playing = '1'; btn.textContent = t('stop'); },
+    setBtn(btn) { this.btn = btn; btn.dataset.playing = '1'; btn.innerHTML = playInner(btn.dataset.mode, true); },
     play(ex, btn) {
       const same = this.btn === btn;
       this.stop();
@@ -1388,7 +1525,7 @@
       clearTimeout(this.timer);
       this.nodes.forEach((n) => { try { n.stop(); } catch (e) {} });
       this.nodes = [];
-      if (this.btn) { this.btn.dataset.playing = '0'; this.btn.textContent = this.btn.dataset.mode === 'through' ? t('through') : t('listen'); this.btn = null; }
+      if (this.btn) { this.btn.dataset.playing = '0'; this.btn.innerHTML = playInner(this.btn.dataset.mode, false); this.btn = null; }
     },
   };
 
@@ -1466,7 +1603,7 @@
   function levelHint() { $('sr-level-hint').textContent = L().blurbs[S.level]; }
   function syncTempo() { $('sr-tempo').value = S.tempo; $('sr-tempo-v').textContent = '♩ = ' + S.tempo; }
 
-  function renderSR() {
+  function renderSR(anim) {
     Player.stop();
     const sheet = $('sr-sheet');
     $('sr-code').value = S.srSeed;
@@ -1475,8 +1612,7 @@
     let html = '<div class="sheet-head"><div><h2>' + t('srTitle') + '</h2><div class="sub">' + t('srSub', { l: S.level, h: L().handsTxt[S.hands], n: S.bars }) + '</div></div><div class="meta">' + t('code') + ' ' + S.srSeed + '</div></div>';
     html += '<div class="instr no-print" style="color:var(--muted);font-size:13px">' + t('srInstr') + '</div>';
     for (let i = 0; i < nEx; i++) {
-      html += '<div class="exercise" id="exw-' + i + '"><div class="ex-head"><span class="det" id="ex-det-' + i + '"></span><span class="spacer"></span><span class="pt-status" id="pt-st-' + i + '"></span>' +
-        '<button class="btn small play" data-mode="listen" data-i="' + i + '">' + t('listen') + '</button><button class="btn small play" data-mode="through" data-i="' + i + '">' + t('through') + '</button></div><div class="notation" id="ex-' + i + '"></div></div>';
+      html += '<div class="exercise" id="exw-' + i + '"><div class="ex-head"><span class="det" id="ex-det-' + i + '"></span><span class="spacer"></span><span class="pt-status" id="pt-st-' + i + '"></span></div><div class="notation" id="ex-' + i + '"></div></div>';
     }
     sheet.innerHTML = html;
     const nm = N();
@@ -1490,14 +1626,27 @@
         draw(d, sy.abc, { staffwidth: 760, paddingtop: si === 0 ? 12 : 4 });
       });
     }
+    updateBar();
+    if (anim) animate(sheet, anim);
   }
-  $('sr-sheet').addEventListener('click', (e) => {
-    const b = e.target.closest('.play'); if (!b) return;
-    const i = Number(b.dataset.i);
-    if (b.dataset.mode === 'through') Player.through(currentSet[i], i, b); else Player.play(currentSet[i], b);
-  });
-  $('sr-go').addEventListener('click', () => { S.srSeed = newSeed(); save(); renderSR(); });
-  $('sr-load').addEventListener('click', () => { const v = parseInt($('sr-code').value, 10); if (v > 0) { S.srSeed = v; save(); renderSR(); } });
+  // lesson flow: swipe left (or New) for the next exercise, swipe right to go back to earlier ones
+  const srBack = [], srFwd = [];
+  function srStep(dir, fresh) {
+    if (dir > 0) { srBack.push(S.srSeed); S.srSeed = !fresh && srFwd.length ? srFwd.pop() : newSeed(); if (fresh) srFwd.length = 0; }
+    else { if (!srBack.length) return; srFwd.push(S.srSeed); S.srSeed = srBack.pop(); }
+    save(); renderSR(dir > 0 ? 'swipe-next' : 'swipe-prev');
+    $('content').scrollTop = 0;
+  }
+  let swipe = null;
+  $('content').addEventListener('touchstart', (e) => { swipe = S.view === 'sr' && e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() } : null; }, { passive: true });
+  $('content').addEventListener('touchend', (e) => {
+    if (!swipe) return;
+    const c = e.changedTouches[0], dx = c.clientX - swipe.x, dy = c.clientY - swipe.y, quick = Date.now() - swipe.t < 700;
+    swipe = null;
+    if (quick && Math.abs(dx) > 70 && Math.abs(dy) < Math.abs(dx) * 0.5) srStep(dx < 0 ? 1 : -1, false);
+  }, { passive: true });
+  $('sr-go').addEventListener('click', () => { closePanelIfOverlay(); srStep(1, true); });
+  $('sr-load').addEventListener('click', () => { const v = parseInt($('sr-code').value, 10); if (v > 0) { srBack.push(S.srSeed); S.srSeed = v; save(); renderSR('swipe-next'); closePanelIfOverlay(); } });
   $('sr-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('sr-load').click(); });
   keySel.addEventListener('change', () => { S.key = keySel.value; save(); renderSR(); });
   $('sr-meter').addEventListener('change', () => { S.meter = $('sr-meter').value; save(); renderSR(); });
@@ -1524,7 +1673,7 @@
     });
     sheet.innerHTML = html + '</div>';
     sheet.classList.toggle('show-answers', S.answers);
-    thMeta();
+    thMeta(); updateBar();
     ws.items.forEach((q, i) => {
       const w = q.wide ? 560 : 140;
       draw($('q-' + i), q.abc, { staffwidth: w }, 1);
@@ -1532,10 +1681,11 @@
   }
   function thMeta() { const m = $('th-meta'); if (m) m.textContent = t('code') + ' ' + S.thSeed + (S.answers ? ' · ' + t('answerKey') : ''); }
   $('th-topic').addEventListener('change', () => { S.topic = $('th-topic').value; topicHint(); syncRanges(); save(); renderTheory(); });
-  $('th-go').addEventListener('click', () => { S.thSeed = newSeed(); save(); renderTheory(); });
+  $('th-go').addEventListener('click', () => { closePanelIfOverlay(); S.thSeed = newSeed(); save(); renderTheory(); animate($('th-sheet'), 'swipe-next'); });
   $('th-load').addEventListener('click', () => { const v = parseInt($('th-code').value, 10); if (v > 0) { S.thSeed = v; save(); renderTheory(); } });
   $('th-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('th-load').click(); });
-  $('th-answers').addEventListener('change', () => { S.answers = $('th-answers').checked; save(); $('th-sheet').classList.toggle('show-answers', S.answers); thMeta(); });
+  function setAnswers(v) { S.answers = v; $('th-answers').checked = v; save(); $('th-sheet').classList.toggle('show-answers', v); thMeta(); updateBar(); }
+  $('th-answers').addEventListener('change', () => setAnswers($('th-answers').checked));
 
   // ---------- note-name range (shared by tasks and exam) ----------
   if (!S.noteRange || !S.noteRange.treble) S.noteRange = { on: false, treble: [30, 38], bass: [18, 26] };
@@ -1570,14 +1720,6 @@
     });
   });
 
-  function applyThMode() {
-    const qz = S.thMode === 'qz';
-    $('th-ws-ctl').hidden = qz; $('th-qz-ctl').hidden = !qz;
-    $('th-sheet').hidden = qz; $('qz-sheet').hidden = !qz;
-    if (!qz && !$('th-sheet').childElementCount) renderTheory();
-    if (qz) { if (!Q) quizIntro(); }
-  }
-
   // ---------- exam quiz ----------
   const LETTERS4 = ['A', 'B', 'C', 'D'];
   let Q = null; // answers are stored as choice indexes, so the language can change mid-exam
@@ -1590,6 +1732,7 @@
       '<div class="qz-intro"><p>' + t('qzIntro') + (S.qzTime ? t('qzTimed') : '') + '</p><p style="font-size:13px">' + t('qzKeys') + '</p>' +
       '<button class="btn primary" id="qz-start-big">' + t('startExam') + '</button></div>';
     $('qz-start-big').onclick = () => startQuiz(newSeed());
+    updateBar();
   }
   function buildItems() { Q.items = PV.quiz({ topics: Q.s.topics, difficulty: Q.s.diff, clef: Q.s.clef, count: Q.s.count, lang: S.lang, noteRange: Q.s.noteRange }, Q.seed).items; }
   function startQuiz(seed) {
@@ -1684,7 +1827,7 @@
     else if (id === 'qz-final') handIn();
   });
   document.addEventListener('keydown', (e) => {
-    if (S.view !== 'th' || S.thMode !== 'qz' || !Q || Q.done) return;
+    if (S.view !== 'qz' || !Q || Q.done) return;
     if (e.target.closest('input, select, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
     const k = e.key.toUpperCase();
     if (/^[1-4]$/.test(k)) { e.preventDefault(); choose(Number(k) - 1); }
@@ -1697,18 +1840,20 @@
     cb.addEventListener('change', () => { S.qzTopics = [...document.querySelectorAll('#qz-topics input:checked')].map((x) => x.value); save(); syncRanges(); if (!Q) quizIntro(); });
   });
   $('qz-time').addEventListener('change', () => { S.qzTime = Number($('qz-time').value); save(); if (!Q) quizIntro(); });
-  $('qz-go').addEventListener('click', () => startQuiz(newSeed()));
+  $('qz-go').addEventListener('click', () => { closePanelIfOverlay(); startQuiz(newSeed()); });
   $('qz-load').addEventListener('click', () => { const v = parseInt($('qz-code').value, 10); if (v > 0) startQuiz(v); });
   $('qz-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('qz-load').click(); });
 
-  // ---------- language ----------
-  $('lang').addEventListener('change', () => {
-    S.lang = $('lang').value; save();
+  // ---------- language (Settings tab) ----------
+  function onLang() {
     applyStatic();
     renderSR();
     if ($('th-sheet').childElementCount) renderTheory();
-    if (Q) { buildItems(); if (Q.done) renderResults(); else renderQuiz(); } else if (S.thMode === 'qz') quizIntro();
-  });
+    if (Q) { buildItems(); if (Q.done) renderResults(); else renderQuiz(); } else if (S.view === 'qz') quizIntro();
+    updateBar();
+  }
+  const standalone = navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  $('install-title').hidden = $('install-group').hidden = standalone;
 
   // ---------- init ----------
   seg('sr-level', 'level', () => { levelHint(); S.tempo = PV.LEVELS[S.level].bpm; syncTempo(); save(); renderSR(); });
@@ -1717,24 +1862,26 @@
   seg('th-diff', 'diff', renderTheory);
   seg('th-clef', 'clef', () => { syncRanges(); renderTheory(); });
   seg('th-count', 'qcount', renderTheory);
-  seg('th-mode', 'thMode', applyThMode);
+  seg('set-lang', 'lang', onLang);
   seg('qz-diff', 'qzDiff', () => { if (!Q) quizIntro(); });
   seg('qz-clef', 'qzClef', () => { syncRanges(); if (!Q) quizIntro(); });
   seg('qz-count', 'qzCount', () => { if (!Q) quizIntro(); });
   if (!S.tempo) S.tempo = PV.LEVELS[S.level].bpm;
-  $('lang').value = S.lang;
   $('sr-meter').value = S.meter; $('th-topic').value = S.topic; $('pt-hide').value = S.ptHideMode; $('qz-time').value = String(S.qzTime);
   $('sr-countin').checked = S.countIn; $('th-answers').checked = S.answers;
   applyStatic(); syncTempo();
 
-  document.querySelectorAll('.btn.print').forEach((b) => b.addEventListener('click', () => { Player.stop(); window.print(); }));
 
   // installable app (home screen on iPad): offline support via the service worker
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
   }
 
-  function start() { renderSR(); showView(S.view); }
+  function start() {
+    setPanel(narrow() ? false : S.panelOpen !== false);
+    renderSR(); showView(S.view);
+    const sp = $('splash'); requestAnimationFrame(() => { sp.classList.add('out'); setTimeout(() => sp.remove(), 400); });
+  }
   if (abcReady()) start(); else window.addEventListener('load', start);
 })();
 </script>

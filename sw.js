@@ -1,6 +1,6 @@
 // Prima Vista service worker (sw.js is generated from sw.template.js by build.py — edit the template).
 // Page: network first, so teachers get updates when online; cached copy when offline.
-const CACHE = 'pv-1af6357455';
+const CACHE = 'pv-1676f99106';
 const ASSETS = ["./", "index.html", "manifest.webmanifest", "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "fonts/fraunces-latin-400-italic.woff2", "fonts/fraunces-latin-400-normal.woff2", "fonts/fraunces-latin-600-normal.woff2", "fonts/inter-latin-400-normal.woff2", "fonts/inter-latin-500-normal.woff2", "fonts/inter-latin-600-normal.woff2"];
 
 self.addEventListener('install', (e) => {
