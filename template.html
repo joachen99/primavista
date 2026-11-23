@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#fbf8f2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Prima Vista">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<title>Prima Vista — sight-reading &amp; theory for piano teachers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fbf8f2;
+    --desk: #efe9de;
+    --ink: #1f1b16;
+    --muted: #6d655a;
+    --line: #ddd4c4;
+    --accent: #7a2e2e;
+    --accent-soft: #f3e4e0;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--desk); color: var(--ink); font: 14px/1.45 Inter, system-ui, sans-serif; }
+  header.top { display: flex; align-items: center; gap: 28px; padding: 14px 28px; border-bottom: 1px solid var(--line); background: var(--paper); position: sticky; top: 0; z-index: 5; }
+  .brand { display: flex; align-items: baseline; gap: 10px; }
+  .brand h1 { font: 600 22px/1 Fraunces, Georgia, serif; margin: 0; letter-spacing: -0.01em; }
+  .brand h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .brand .tag { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 2px 8px; }
+  nav.tabs { display: flex; gap: 4px; }
+  nav.tabs button { font: 500 14px Inter, sans-serif; background: none; border: 0; padding: 8px 14px; border-radius: 8px; color: var(--muted); cursor: pointer; }
+  nav.tabs button[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
+  nav.tabs button:hover { color: var(--ink); }
+
+  main { display: grid; grid-template-columns: 300px 1fr; gap: 28px; padding: 28px; max-width: 1320px; margin: 0 auto; align-items: start; }
+  aside { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; position: sticky; top: calc(84px + env(safe-area-inset-top)); max-height: calc(100vh - 100px - env(safe-area-inset-top)); overflow-y: auto; overscroll-behavior: contain; }
+  aside h2 { font: 600 17px Fraunces, Georgia, serif; margin: 0 0 16px; }
+  .field { margin-bottom: 16px; }
+  .field > label, .field > .lbl { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+  .seg button { flex: 1; border: 0; background: none; padding: 7px 0; font: 500 13px Inter, sans-serif; cursor: pointer; color: var(--ink); border-right: 1px solid var(--line); }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 2.9em; }
+  select, input[type=text] { width: 100%; padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: #fff; font: 13px Inter, sans-serif; color: var(--ink); }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 8px 12px; border-radius: 8px; font: 500 13px Inter, sans-serif; cursor: pointer; }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); width: 100%; padding: 10px; font-size: 14px; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.small { padding: 5px 10px; font-size: 12px; }
+  .divider { height: 1px; background: var(--line); margin: 18px 0; }
+  .check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+  .field > label.check { display: flex; font-size: 13px; font-weight: 400; color: var(--ink); text-transform: none; letter-spacing: 0; margin-bottom: 0; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .code-row { display: flex; gap: 6px; }
+  .code-row input { font-family: ui-monospace, Menlo, monospace; letter-spacing: .05em; }
+  .code-row .btn { flex: none; }
+
+  .sheet { background: #fff; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 30px rgba(60,40,20,.08); padding: 44px 52px 52px; min-height: 900px; }
+  .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1.5px solid var(--ink); padding-bottom: 10px; margin-bottom: 26px; gap: 20px; }
+  .sheet-head h2 { font: 600 26px/1.1 Fraunces, Georgia, serif; margin: 0; }
+  .sheet-head .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .sheet-head .meta { text-align: right; font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  .exercise { margin-bottom: 30px; page-break-inside: avoid; break-inside: avoid; }
+  .ex-head { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .ex-head h3 { font: 600 16px Fraunces, Georgia, serif; margin: 0; }
+  .ex-head .det { color: var(--muted); font-size: 13px; }
+  .ex-head .spacer { flex: 1; }
+  .play { border-radius: 99px; }
+  .play[data-playing="1"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .notation svg { display: block; }
+  .sys { position: relative; }
+  .mask { position: absolute; top: 0; bottom: 0; pointer-events: none; transition: opacity .25s ease, background-color .2s; opacity: 0; border-radius: 4px; }
+  .mask.cur { opacity: 1; background: rgba(122, 46, 46, .07); box-shadow: inset 0 -3px 0 rgba(122,46,46,.5); }
+  .mask.gone { opacity: 1; background: repeating-linear-gradient(135deg, #fff 0 9px, #f6f1e8 9px 11px); box-shadow: none; }
+  .exercise.running { outline: 2px solid var(--accent-soft); outline-offset: 10px; border-radius: 4px; }
+  .pt-status { font-size: 12px; color: var(--accent); font-weight: 600; min-width: 64px; text-align: right; }
+  .notation path, .notation text { }
+
+  .instr { font-size: 14px; margin: -8px 0 18px; }
+  .qgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 26px; }
+  .q { break-inside: avoid; page-break-inside: avoid; }
+  .q.wide { grid-column: 1 / -1; }
+  .q .qn { font: 600 13px Fraunces, Georgia, serif; }
+  .q .qp { font-size: 12px; color: var(--muted); margin-left: 4px; }
+  .q .ans { border-bottom: 1px solid #aaa; min-height: 24px; margin-top: 2px; font-size: 13px; padding: 3px 2px; color: var(--accent); font-weight: 500; }
+  .q .ans .a { visibility: hidden; }
+  .show-answers .q .ans .a { visibility: visible; }
+  .range-row { display: flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 13px; }
+  .range-row > span:first-child { width: 72px; color: var(--muted); }
+  .range-row select { flex: 1; min-width: 0; }
+
+  .empty, .err { color: var(--muted); padding: 40px 0; text-align: center; }
+  .err { color: var(--accent); }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 0 0 30px; }
+  [hidden] { display: none !important; }
+
+  /* ---------- quiz ---------- */
+  .checks { display: grid; gap: 6px; }
+  .qz-top { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; font-size: 13px; color: var(--muted); }
+  .qz-top .bar { flex: 1; height: 6px; background: var(--desk); border-radius: 99px; overflow: hidden; }
+  .qz-top .bar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+  .qz-top .clock { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+  .qz-top .clock.low { color: var(--accent); }
+  .qz-card { max-width: 640px; margin: 0 auto; text-align: center; }
+  .qz-topic { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .qz-prompt { font: 600 22px/1.3 Fraunces, Georgia, serif; margin: 6px 0 18px; }
+  .qz-staff { width: 300px; max-width: 100%; margin: 0 auto 24px; }
+  .qz-staff.wide { width: 620px; }
+  .qz-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
+  .qz-choice { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; font: 500 15px Inter, sans-serif; cursor: pointer; color: var(--ink); text-align: left; }
+  .qz-choice:hover { border-color: var(--ink); }
+  .qz-choice kbd { font: 600 11px Inter, sans-serif; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 2px 6px; background: var(--paper); }
+  .qz-choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .qz-choice[aria-pressed="true"] kbd { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .qz-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 30px auto 0; max-width: 640px; }
+  .qz-dots { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; flex: 1; }
+  .qz-dots button { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font: 500 10px Inter, sans-serif; color: var(--muted); cursor: pointer; padding: 0; }
+  .qz-dots button.done { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .qz-dots button.here { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .qz-hand { text-align: center; margin-top: 30px; }
+  .qz-confirm { max-width: 460px; margin: 16px auto 0; padding: 14px 16px; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; font-size: 14px; }
+  .qz-confirm .row { margin-top: 10px; }
+  .qz-intro { max-width: 520px; margin: 30px auto; text-align: center; }
+  .qz-intro p { color: var(--muted); }
+  .qz-intro .btn.primary { width: auto; padding: 12px 28px; margin-top: 12px; }
+  .res-score { display: flex; align-items: center; gap: 28px; margin-bottom: 28px; }
+  .res-big { font: 600 64px/1 Fraunces, Georgia, serif; }
+  .res-big small { font-size: 26px; color: var(--muted); }
+  .grade { display: inline-block; font: 600 14px Inter, sans-serif; padding: 5px 12px; border-radius: 99px; background: var(--ink); color: #fff; }
+  .grade.g-dist { background: #2f5d3a; } .grade.g-merit { background: #3a5a7a; } .grade.g-pass { background: #8a6d2b; } .grade.g-fail { background: var(--accent); }
+  .res-meta { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .res-topics { display: grid; gap: 8px; margin-bottom: 30px; }
+  .res-topic { display: grid; grid-template-columns: 140px 1fr 60px; gap: 12px; align-items: center; font-size: 13px; }
+  .res-topic .bar { height: 8px; background: var(--desk); border-radius: 99px; overflow: hidden; }
+  .res-topic .bar i { display: block; height: 100%; background: var(--ink); }
+  .res-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
+  .rv { display: grid; grid-template-columns: 34px 200px 1fr; gap: 14px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+  .rv.wide { grid-template-columns: 34px 1fr; }
+  .rv.wide .rv-staff { grid-column: 2; }
+  .rv.wide .rv-txt { grid-column: 2; }
+  .rv-n { font: 600 14px Fraunces, Georgia, serif; }
+  .rv-n.ok { color: #2f5d3a; } .rv-n.bad { color: var(--accent); }
+  .rv-txt { font-size: 13px; }
+  .rv-txt .yours { color: var(--accent); text-decoration: line-through; }
+  .rv-txt .right { color: #2f5d3a; font-weight: 600; }
+  @media (max-width: 900px) { .qz-choices { grid-template-columns: 1fr; } .rv { grid-template-columns: 30px 1fr; } .rv-txt { grid-column: 2; } .res-topic { grid-template-columns: 100px 1fr 50px; } }
+
+  /* iPad: touch-friendly controls, room for the home indicator and the notch */
+  button, select, input, label.check { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  header.top { padding-top: calc(14px + env(safe-area-inset-top)); padding-left: calc(28px + env(safe-area-inset-left)); padding-right: calc(28px + env(safe-area-inset-right)); }
+  footer { padding-bottom: calc(30px + env(safe-area-inset-bottom)); }
+  .btn.print { width: 100%; margin-top: 8px; }
+  @media (pointer: coarse) {
+    .seg button { padding: 11px 0; font-size: 14px; }
+    .btn { min-height: 40px; }
+    .btn.small { min-height: 36px; padding: 6px 12px; }
+    select, input[type=text] { min-height: 40px; font-size: 16px; }
+    label.check { padding: 4px 0; }
+  }
+  @media (max-width: 1100px) {
+    main { grid-template-columns: 250px 1fr; gap: 18px; padding: 18px; }
+    aside { padding: 16px; }
+    .sheet { padding: 30px 28px 36px; min-height: 0; }
+  }
+  @media (max-width: 700px) {
+    main { grid-template-columns: 1fr; padding: 16px; }
+    aside { position: static; max-height: none; overflow: visible; }
+    header.top { padding: 12px 16px; gap: 14px; flex-wrap: wrap; }
+    .sheet { padding: 24px 18px; min-height: 0; }
+    .qgrid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media print {
+    body { background: #fff; }
+    header.top, aside, footer, .play, .no-print { display: none !important; }
+    main { display: block; padding: 0; max-width: none; }
+    .sheet { box-shadow: none; padding: 0; min-height: 0; }
+  }
+  /* --- v3 additions --- */
+  .lang { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .lang select { width: auto; padding: 5px 8px; }
+  .sweep { position: absolute; top: 0; bottom: 0; pointer-events: none; background: linear-gradient(90deg, #fff 0, #fff calc(100% - 14px), rgba(255,255,255,.55) 100%); }
+  .cursor { position: absolute; top: 4px; bottom: 4px; width: 2px; margin-left: -1px; background: var(--accent); border-radius: 2px; pointer-events: none; box-shadow: 0 0 0 3px rgba(122,46,46,.12); }
+  .item-staff { overflow-x: auto; }
+  .item-staff svg { display: block; }
+  .qz-staff { width: auto; display: flex; justify-content: center; }
+  .qz-staff.wide { width: auto; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>Prima <em>Vista</em></h1><span class="tag" data-t="prototype"></span></div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-sr" aria-selected="true" data-view="sr" data-t="tabSr"></button>
+    <button role="tab" id="tab-th" aria-selected="false" data-view="th" data-t="tabTh"></button>
+  </nav>
+  <label class="lang"><span data-t="language"></span>
+    <select id="lang">
+      <option value="en">English</option>
+      <option value="nb">Norsk</option>
+    </select>
+  </label>
+</header>
+
+<main>
+  <!-- ============ SIGHT-READING ============ -->
+  <aside id="ctl-sr">
+    <h2 data-t="srTitle"></h2>
+    <div class="field">
+      <span class="lbl" data-t="level"></span>
+      <div class="seg" id="sr-level"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button></div>
+      <div class="hint" id="sr-level-hint"></div>
+    </div>
+    <div class="field">
+      <span class="lbl" data-t="hands"></span>
+      <div class="seg" id="sr-hands"><button data-v="both" data-t="both"></button><button data-v="rh" data-t="right"></button><button data-v="lh" data-t="left"></button></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="sr-key" data-t="key"></label><select id="sr-key"></select></div>
+      <div class="field"><label for="sr-meter" data-t="time"></label>
+        <select id="sr-meter"><option value="auto" data-t="auto"></option><option>4/4</option><option>3/4</option><option>2/4</option><option>6/8</option></select></div>
+    </div>
+    <div class="field">
+      <span class="lbl" data-t="length"></span>
+      <div class="seg" id="sr-bars"><button data-v="4">4</button><button data-v="8">8</button><button data-v="12">12</button><button data-v="16">16</button></div>
+    </div>
+    <button class="btn primary" id="sr-go" data-t="newEx"></button>
+    <button class="btn print" data-t="print"></button>
+    <div class="divider"></div>
+    <div class="field">
+      <label for="sr-tempo"><span data-t="tempo"></span> · <span id="sr-tempo-v"></span></label>
+      <input type="range" id="sr-tempo" min="40" max="160" step="2">
+      <label class="check" style="margin-top:8px"><input type="checkbox" id="sr-countin"> <span data-t="countIn"></span></label>
+    </div>
+    <div class="field">
+      <span class="lbl" data-t="ptTitle"></span>
+      <label for="pt-hide" style="display:block;font-size:13px;margin-bottom:4px" data-t="hideMusic"></label>
+      <select id="pt-hide"><option value="line" data-t="hideLine"></option><option value="bar" data-t="hideBar"></option><option value="off" data-t="hideOff"></option></select>
+      <label class="check" style="margin-top:10px"><input type="checkbox" id="pt-metro"> <span data-t="metronome"></span></label>
+      <label class="check" style="margin-top:6px"><input type="checkbox" id="pt-music"> <span data-t="playAlong"></span></label>
+      <div class="hint" data-t="ptHint"></div>
+    </div>
+    <div class="field">
+      <label for="sr-code" data-t="sheetCode"></label>
+      <div class="code-row"><input type="text" id="sr-code" inputmode="numeric" maxlength="6"><button class="btn small" id="sr-load" data-t="load"></button></div>
+      <div class="hint" data-t="codeHint"></div>
+    </div>
+  </aside>
+  <section id="view-sr">
+    <div class="sheet" id="sr-sheet"><div class="empty">…</div></div>
+  </section>
+
+  <!-- ============ THEORY ============ -->
+  <aside id="ctl-th" hidden>
+    <h2 data-t="thTitle"></h2>
+    <div class="field">
+      <div class="seg" id="th-mode"><button data-v="ws" data-t="modeWs"></button><button data-v="qz" data-t="modeQz"></button></div>
+    </div>
+    <div id="th-ws-ctl">
+      <div class="field">
+        <label for="th-topic" data-t="topic"></label>
+        <select id="th-topic">
+          <option value="notes" data-t="t_notes"></option>
+          <option value="intervals" data-t="t_intervals"></option>
+          <option value="keys" data-t="t_keys"></option>
+          <option value="triads" data-t="t_triads"></option>
+          <option value="scales" data-t="t_scales"></option>
+          <option value="mixed" data-t="t_mixed"></option>
+        </select>
+        <div class="hint" id="th-topic-hint"></div>
+      </div>
+      <div class="field"><span class="lbl" data-t="difficulty"></span>
+        <div class="seg" id="th-diff"><button data-v="easy" data-t="easy"></button><button data-v="medium" data-t="medium"></button><button data-v="hard" data-t="hard"></button></div></div>
+      <div class="field"><span class="lbl" data-t="clef"></span>
+        <div class="seg" id="th-clef"><button data-v="treble" data-t="treble"></button><button data-v="bass" data-t="bass"></button><button data-v="both" data-t="both"></button></div></div>
+      <div class="field" id="th-range-f">
+        <label class="check"><input type="checkbox" class="range-on"> <span data-t="noteRange"></span></label>
+        <div class="range-rows"></div>
+      </div>
+      <div class="field"><span class="lbl" data-t="questions"></span>
+        <div class="seg" id="th-count"><button data-v="8">8</button><button data-v="12">12</button><button data-v="16">16</button><button data-v="20">20</button></div></div>
+      <button class="btn primary" id="th-go" data-t="newWs"></button>
+      <button class="btn print" data-t="print"></button>
+      <div class="divider"></div>
+      <label class="check"><input type="checkbox" id="th-answers"> <span data-t="showKey"></span></label>
+      <div class="field" style="margin-top:16px">
+        <label for="th-code" data-t="sheetCode"></label>
+        <div class="code-row"><input type="text" id="th-code" inputmode="numeric" maxlength="6"><button class="btn small" id="th-load" data-t="load"></button></div>
+        <div class="hint" data-t="wsHint"></div>
+      </div>
+    </div>
+    <div id="th-qz-ctl" hidden>
+      <div class="field">
+        <span class="lbl" data-t="topics"></span>
+        <div class="checks" id="qz-topics">
+          <label class="check"><input type="checkbox" value="notes"> <span data-t="t_notes"></span></label>
+          <label class="check"><input type="checkbox" value="intervals"> <span data-t="t_intervals"></span></label>
+          <label class="check"><input type="checkbox" value="keys"> <span data-t="t_keys"></span></label>
+          <label class="check"><input type="checkbox" value="triads"> <span data-t="t_triads"></span></label>
+          <label class="check"><input type="checkbox" value="scales"> <span data-t="t_scales"></span></label>
+        </div>
+      </div>
+      <div class="field"><span class="lbl" data-t="difficulty"></span>
+        <div class="seg" id="qz-diff"><button data-v="easy" data-t="easy"></button><button data-v="medium" data-t="medium"></button><button data-v="hard" data-t="hard"></button></div></div>
+      <div class="field"><span class="lbl" data-t="clef"></span>
+        <div class="seg" id="qz-clef"><button data-v="treble" data-t="treble"></button><button data-v="bass" data-t="bass"></button><button data-v="both" data-t="both"></button></div></div>
+      <div class="field" id="qz-range-f">
+        <label class="check"><input type="checkbox" class="range-on"> <span data-t="noteRange"></span></label>
+        <div class="range-rows"></div>
+      </div>
+      <div class="field"><span class="lbl" data-t="qQuestions"></span>
+        <div class="seg" id="qz-count"><button data-v="10">10</button><button data-v="20">20</button><button data-v="30">30</button></div></div>
+      <div class="field"><label for="qz-time" data-t="timeLimit"></label>
+        <select id="qz-time"><option value="0" data-t="noLimit"></option><option value="5"></option><option value="10"></option><option value="20"></option><option value="30"></option><option value="45"></option></select></div>
+      <button class="btn primary" id="qz-go" data-t="startNewQz"></button>
+      <div class="field" style="margin-top:16px">
+        <label for="qz-code" data-t="qzCode"></label>
+        <div class="code-row"><input type="text" id="qz-code" inputmode="numeric" maxlength="6"><button class="btn small" id="qz-load" data-t="start"></button></div>
+        <div class="hint" data-t="qzCodeHint"></div>
+      </div>
+    </div>
+  </aside>
+  <section id="view-th" hidden>
+    <div class="sheet" id="th-sheet"></div>
+    <div class="sheet" id="qz-sheet" hidden></div>
+  </section>
+</main>
+<footer data-t="footer"></footer>
+
+<script>/*GEN_JS*/</script>
+<script>/* abcjs 6.7.3 (MIT, see vendor/abcjs-LICENSE.md) */
+/*ABCJS*/</script>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+
+  // ================= TRANSLATIONS =================
+  const T = {
+    en: {
+      prototype: 'Prototype', tabSr: 'Sight-reading', tabTh: 'Theory', language: 'Language',
+      srTitle: 'Sight-reading', level: 'Level', hands: 'Hands', both: 'Both', right: 'Right', left: 'Left', key: 'Key', time: 'Time', auto: 'Auto', major: 'Major', minor: 'Minor',
+      length: 'Length (bars)', newEx: 'New exercise', tempo: 'Tempo', countIn: 'One-bar count-in',
+      ptTitle: 'Play-through', hideMusic: 'Hide the music', hideLine: 'As the line passes', hideBar: 'Bar by bar', hideOff: "Don't hide", metronome: 'Metronome', playAlong: 'Play the music along',
+      ptHint: 'A line moves through the music in time. The student plays without stopping, and whatever the line has passed disappears.',
+      sheetCode: 'Sheet code', load: 'Load', codeHint: 'Same settings + same code = the same sheet.',
+      handsTxt: { both: 'Hands together', rh: 'Right hand', lh: 'Left hand' }, srSub: 'Level {l} · {h} · {n} bars', code: 'Code',
+      srInstr: 'Before playing: name the key and time signature, find the highest and lowest notes, and tap the rhythm once.',
+      listen: '▶ Listen', through: '● Play-through', stop: '■ Stop', countInN: 'Count-in {n}', barN: 'Bar {a} / {b}', done: 'Done ✓',
+      blurbs: { 1: 'Five-finger position · C major · 4/4 · mostly half and whole notes, steps and thirds', 2: 'Five-finger position · C, G and F major · whole, half and quarter notes', 3: 'Five-finger position · up to 2 sharps/flats, minor keys · eighth notes', 4: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · broken-chord left hand', 5: 'Up to 4 sharps/flats · 6/8 time · rests · leaps up to a sixth', 6: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass · leaps to the octave' },
+      thTitle: 'Theory', modeWs: 'Tasks', modeQz: 'Exam', topic: 'Topic', topics: 'Topics',
+      t_notes: 'Note names', t_intervals: 'Intervals', t_keys: 'Keys', t_triads: 'Triads', t_scales: 'Scales', t_mixed: 'Mixed',
+      difficulty: 'Difficulty', easy: 'Easy', medium: 'Medium', hard: 'Hard', clef: 'Clef', treble: 'Treble', bass: 'Bass', questions: 'Tasks', qQuestions: 'Questions',
+      newWs: 'New tasks', showKey: 'Show answer key', wsHint: 'Print the tasks for the student, then turn on the answer key and print again for yourself.',
+      clefSub: { treble: 'Treble clef', bass: 'Bass clef', both: 'Treble and bass clef' }, answerKey: 'ANSWER KEY', noteRange: 'Choose note range (note names)', rangeHint: 'Notes are picked between the lowest and highest note you choose. C4 is middle C.',
+      info: {
+        notes: ['Write the letter name of each note.', 'Easy: notes on the staff. Medium: up to two ledger lines. Hard: adds sharps and flats.'],
+        intervals: ['Name each interval.', 'Easy: number only (3rd, 5th…). Medium: major, minor and perfect. Hard: adds augmented and diminished.'],
+        keys: ['Name the major key and its relative minor for each key signature.', 'Easy: up to 2 sharps/flats. Medium: up to 4. Hard: all keys.'],
+        triads: ['Name each triad (root and quality).', 'Easy: major and minor. Medium: adds diminished and augmented. Hard: adds inversions.'],
+        scales: ['Name each scale.', 'Easy: major. Medium: adds natural and harmonic minor. Hard: adds melodic minor and more keys.'],
+        mixed: ['Answer each question.', 'A mix of note names, intervals, keys and triads.'],
+      },
+      pk: { note: 'Name this note.', interval: 'Name this interval.', key: 'Which key has this key signature?', triad: 'Name this triad.', triadPos: 'Name this triad and its position.', scaleId: 'Which scale is this?' },
+      timeLimit: 'Time limit', noLimit: 'None (clock counts up)', minutes: '{n} minutes', startNewQz: 'Start new exam', qzCode: 'Exam code', start: 'Start',
+      qzCodeHint: 'Students who use the same code and settings get the same exam.', chooseTopic: 'Choose at least one topic.',
+      qzTitle: 'Theory exam', qzIntro: 'One question at a time, no feedback until you hand in. You can move back and forth and change answers before handing in.', qzTimed: ' The exam hands itself in when time runs out.',
+      qzKeys: 'Keys: <b>1–4</b> or <b>A–D</b> to answer · <b>← →</b> to move', startExam: 'Start exam', qOf: 'Question {a} of {b}', answered: '{n} answered', timeLeft: '{t} left',
+      prev: '← Previous', next: 'Next →', handIn: 'Hand in', unanswered: '{n} unanswered.', unansweredNote: ' Unanswered questions count as wrong.', allAnswered: 'All questions answered.', handInNow: ' Hand in now?', keepWorking: 'Keep working',
+      results: 'Results', timeUsed: 'Time used', timeRanOut: ' (time ran out)', grades: ['Distinction', 'Merit', 'Pass', 'Not passed yet'], thresholds: 'Pass 66% · Merit 80% · Distinction 90%',
+      retry: 'Try the same exam again', newExam: 'New exam', showAll: 'Show all questions', showWrong: 'Show mistakes only', noMistakes: 'No mistakes. Every answer was correct.',
+      yourAnswer: 'Your answer', correct: 'Correct', notAnswered: 'Not answered', pct: '{n}%',
+      footer: 'Prima Vista prototype · every sheet is generated fresh', print: 'Print',
+      libErr: 'The notation library could not load. Check your connection and reload.',
+    },
+    nb: {
+      prototype: 'Prototype', tabSr: 'Prima vista', tabTh: 'Teori', language: 'Språk',
+      srTitle: 'Prima vista', level: 'Nivå', hands: 'Hender', both: 'Begge', right: 'Høyre', left: 'Venstre', key: 'Toneart', time: 'Taktart', auto: 'Automatisk', major: 'Dur', minor: 'Moll',
+      length: 'Lengde (takter)', newEx: 'Ny øvelse', tempo: 'Tempo', countIn: 'Inntelling (én takt)',
+      ptTitle: 'Spill gjennom', hideMusic: 'Skjul notene', hideLine: 'Når linjen passerer', hideBar: 'Takt for takt', hideOff: 'Ikke skjul', metronome: 'Metronom', playAlong: 'Spill musikken samtidig',
+      ptHint: 'En linje beveger seg gjennom notene i tempo. Eleven spiller uten å stoppe, og det linjen har passert, forsvinner.',
+      sheetCode: 'Arkkode', load: 'Hent', codeHint: 'Samme innstillinger + samme kode = samme ark.',
+      handsTxt: { both: 'Begge hender', rh: 'Høyre hånd', lh: 'Venstre hånd' }, srSub: 'Nivå {l} · {h} · {n} takter', code: 'Kode',
+      srInstr: 'Før du spiller: Finn toneart og taktart, finn høyeste og laveste tone, og klapp rytmen én gang.',
+      listen: '▶ Lytt', through: '● Spill gjennom', stop: '■ Stopp', countInN: 'Inntelling {n}', barN: 'Takt {a} / {b}', done: 'Ferdig ✓',
+      blurbs: { 1: 'Femfingerposisjon · C-dur · 4/4 · mest halv- og helnoter, trinn og terser', 2: 'Femfingerposisjon · C-, G- og F-dur · hel-, halv- og fjerdedelsnoter', 3: 'Femfingerposisjon · opptil 2 ♯/♭, molltonearter · åttendedeler', 4: 'Posisjonsskifter · opptil 3 ♯/♭ · punkterte rytmer · brutte akkorder i venstre hånd', 5: 'Opptil 4 ♯/♭ · 6/8-takt · pauser · sprang opptil sekst', 6: 'Opptil 5 ♯/♭ · sekstendedeler · Alberti-bass · sprang opptil oktav' },
+      thTitle: 'Teori', modeWs: 'Oppgaver', modeQz: 'Prøve', topic: 'Emne', topics: 'Emner',
+      t_notes: 'Notenavn', t_intervals: 'Intervaller', t_keys: 'Tonearter', t_triads: 'Treklanger', t_scales: 'Skalaer', t_mixed: 'Blandet',
+      difficulty: 'Vanskelighetsgrad', easy: 'Lett', medium: 'Middels', hard: 'Vanskelig', clef: 'Nøkkel', treble: 'G-nøkkel', bass: 'F-nøkkel', questions: 'Oppgaver', qQuestions: 'Spørsmål',
+      newWs: 'Nye oppgaver', showKey: 'Vis fasit', wsHint: 'Skriv ut oppgavene til eleven, slå så på fasit og skriv ut én gang til for deg selv.',
+      clefSub: { treble: 'G-nøkkel', bass: 'F-nøkkel', both: 'G- og F-nøkkel' }, answerKey: 'FASIT', noteRange: 'Velg toneomfang (notenavn)', rangeHint: 'Tonene velges mellom laveste og høyeste tone du velger. C4 er midtre C.',
+      info: {
+        notes: ['Skriv navnet på hver tone.', 'Lett: toner i notesystemet. Middels: opptil to hjelpelinjer. Vanskelig: også ♯ og ♭.'],
+        intervals: ['Navngi hvert intervall.', 'Lett: bare tallet (ters, kvint …). Middels: store, små og rene. Vanskelig: også forstørrede og forminskede.'],
+        keys: ['Skriv durtonearten og parallell-mollen for hvert sett med faste fortegn.', 'Lett: opptil 2 fortegn. Middels: opptil 4. Vanskelig: alle tonearter.'],
+        triads: ['Navngi hver treklang (grunntone og type).', 'Lett: dur og moll. Middels: også forminsket og forstørret. Vanskelig: også omvendinger.'],
+        scales: ['Hvilken skala er dette?', 'Lett: dur. Middels: også ren og harmonisk moll. Vanskelig: også melodisk moll og flere tonearter.'],
+        mixed: ['Svar på hvert spørsmål.', 'En blanding av notenavn, intervaller, tonearter og treklanger.'],
+      },
+      pk: { note: 'Hvilken tone er dette?', interval: 'Hvilket intervall er dette?', key: 'Hvilken toneart har disse faste fortegnene?', triad: 'Hvilken treklang er dette?', triadPos: 'Hvilken treklang er dette, og i hvilken stilling?', scaleId: 'Hvilken skala er dette?' },
+      timeLimit: 'Tidsgrense', noLimit: 'Ingen (klokken teller opp)', minutes: '{n} minutter', startNewQz: 'Start ny prøve', qzCode: 'Prøvekode', start: 'Start',
+      qzCodeHint: 'Elever som bruker samme kode og innstillinger, får samme prøve.', chooseTopic: 'Velg minst ett emne.',
+      qzTitle: 'Teoriprøve', qzIntro: 'Ett spørsmål om gangen, ingen tilbakemelding før du leverer. Du kan gå frem og tilbake og endre svar før du leverer.', qzTimed: ' Prøven leveres automatisk når tiden er ute.',
+      qzKeys: 'Taster: <b>1–4</b> eller <b>A–D</b> for å svare · <b>← →</b> for å bla', startExam: 'Start prøven', qOf: 'Spørsmål {a} av {b}', answered: '{n} besvart', timeLeft: '{t} igjen',
+      prev: '← Forrige', next: 'Neste →', handIn: 'Lever', unanswered: '{n} ubesvart.', unansweredNote: ' Ubesvarte spørsmål teller som feil.', allAnswered: 'Alle spørsmål er besvart.', handInNow: ' Vil du levere nå?', keepWorking: 'Fortsett',
+      results: 'Resultat', timeUsed: 'Brukt tid', timeRanOut: ' (tiden gikk ut)', grades: ['Meget godt bestått', 'Godt bestått', 'Bestått', 'Ikke bestått ennå'], thresholds: 'Bestått 66 % · Godt bestått 80 % · Meget godt bestått 90 %',
+      retry: 'Ta samme prøve igjen', newExam: 'Ny prøve', showAll: 'Vis alle spørsmål', showWrong: 'Vis bare feil', noMistakes: 'Ingen feil. Alle svarene var riktige.',
+      yourAnswer: 'Ditt svar', correct: 'Riktig svar', notAnswered: 'Ikke besvart', pct: '{n} %',
+      footer: 'Prima Vista-prototype · hvert ark lages på nytt', print: 'Skriv ut',
+      libErr: 'Notebiblioteket kunne ikke lastes. Sjekk nettforbindelsen og last inn siden på nytt.',
+    },
+  };
+
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('pv.' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('pv.' + k, JSON.stringify(v)); } catch (e) {} },
+  };
+  const navLang = (navigator.language || '').toLowerCase();
+  const S = Object.assign({
+    lang: /^(nb|nn|no)/.test(navLang) ? 'nb' : 'en',
+    view: 'sr', level: 2, hands: 'both', key: 'auto', meter: 'auto', bars: 8, tempo: null, countIn: true, srSeed: null,
+    ptHideMode: 'line', ptMetro: true, ptMusic: false,
+    thMode: 'ws', topic: 'intervals', diff: 'medium', clef: 'treble', qcount: 16, answers: false, thSeed: null,
+    noteRange: { on: false, treble: [30, 38], bass: [18, 26] },
+    qzTopics: ['intervals', 'keys', 'triads'], qzDiff: 'medium', qzClef: 'both', qzCount: 20, qzTime: 0, qzSeed: null,
+  }, store.get('state', {}));
+  if (S.lang !== 'en') S.lang = 'nb'; // the old 'nb-intl' setting is gone
+  const save = () => store.set('state', S);
+  const newSeed = () => 10000 + Math.floor(Math.random() * 89999);
+  if (!S.srSeed) S.srSeed = newSeed();
+  if (!S.thSeed) S.thSeed = newSeed();
+
+  const L = () => T[S.lang === 'en' ? 'en' : 'nb'];
+  const t = (k, vars) => { let s = L()[k]; if (s === undefined) s = T.en[k]; if (vars) Object.keys(vars).forEach((v) => { s = s.split('{' + v + '}').join(vars[v]); }); return s; };
+  const N = () => PV.namer(S.lang);
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function applyStatic() {
+    document.documentElement.lang = S.lang === 'en' ? 'en' : 'nb';
+    document.querySelectorAll('[data-t]').forEach((el) => { el.textContent = t(el.dataset.t); });
+    document.querySelectorAll('#qz-time option').forEach((o) => { if (o.value !== '0') o.textContent = t('minutes', { n: o.value }); });
+    fillKeys();
+    levelHint(); topicHint();
+    syncRanges();
+  }
+
+  // ---------- segmented controls ----------
+  function seg(id, key, onChange) {
+    const el = $(id);
+    const sync = () => el.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v) === String(S[key])));
+    el.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      const v = b.dataset.v; S[key] = /^\d+$/.test(v) ? Number(v) : v;
+      sync(); save(); onChange && onChange();
+    });
+    sync();
+  }
+
+  // ---------- tabs ----------
+  function showView(v) {
+    S.view = v; save();
+    document.querySelectorAll('nav.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
+    $('ctl-sr').hidden = v !== 'sr'; $('view-sr').hidden = v !== 'sr';
+    $('ctl-th').hidden = v !== 'th'; $('view-th').hidden = v !== 'th';
+    Player.stop();
+    if (v === 'th') applyThMode();
+  }
+  document.querySelector('nav.tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) showView(b.dataset.view); });
+
+  // ---------- notation ----------
+  const abcReady = () => typeof window.ABCJS !== 'undefined';
+  // big systems scale to the sheet; small items are drawn at a fixed size so thin staff lines never disappear
+  function draw(el, abc, opts, fixedScale) {
+    if (!abcReady()) { el.innerHTML = '<div class="err">' + t('libErr') + '</div>'; return; }
+    const base = { add_classes: true, paddingtop: 12, paddingbottom: 10, paddingleft: 4, paddingright: 4 };
+    if (fixedScale) base.scale = fixedScale; else base.responsive = 'resize';
+    window.ABCJS.renderAbc(el, abc, Object.assign(base, opts));
+  }
+
+  // ---------- audio ----------
+  const Player = {
+    ctx: null, nodes: [], timer: null, btn: null,
+    ensure() {
+      if (!this.ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return false;
+        try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+        this.ctx = new AC();
+        this.master = this.ctx.createGain(); this.master.gain.value = 0.55;
+        const comp = this.ctx.createDynamicsCompressor();
+        this.master.connect(comp); comp.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+      return true;
+    },
+    tone(midi, tt, dur, vel) {
+      const c = this.ctx, f = 440 * Math.pow(2, (midi - 69) / 12);
+      const g = c.createGain(); g.connect(this.master);
+      const o1 = c.createOscillator(); o1.type = 'triangle'; o1.frequency.value = f; o1.connect(g);
+      const o2 = c.createOscillator(); o2.type = 'sine'; o2.frequency.value = f * 2;
+      const g2 = c.createGain(); g2.gain.value = 0.18; o2.connect(g2); g2.connect(g);
+      g.gain.setValueAtTime(0.0001, tt);
+      g.gain.linearRampToValueAtTime(0.32 * vel, tt + 0.01);
+      g.gain.setTargetAtTime(0.06 * vel, tt + 0.01, 0.6);
+      g.gain.setTargetAtTime(0.0001, tt + Math.max(0.05, dur - 0.03), 0.04);
+      o1.start(tt); o2.start(tt); o1.stop(tt + dur + 0.3); o2.stop(tt + dur + 0.3);
+      this.nodes.push(o1, o2);
+    },
+    click(tt, accent) {
+      const c = this.ctx, o = c.createOscillator(), g = c.createGain();
+      o.type = 'square'; o.frequency.value = accent ? 1760 : 1320;
+      g.gain.setValueAtTime(0.0001, tt); g.gain.linearRampToValueAtTime(0.12, tt + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.05);
+      o.connect(g); g.connect(this.master); o.start(tt); o.stop(tt + 0.06); this.nodes.push(o);
+    },
+    setBtn(btn) { this.btn = btn; btn.dataset.playing = '1'; btn.textContent = t('stop'); },
+    play(ex, btn) {
+      const same = this.btn === btn;
+      this.stop();
+      if (same || !this.ensure()) return;
+      const unit = 60 / S.tempo / 4;
+      let t0 = this.ctx.currentTime + 0.12;
+      if (S.countIn) { for (let u = 0; u < ex.meter.bar; u += ex.meter.beat) this.click(t0 + u * unit, u === 0); t0 += ex.meter.bar * unit; }
+      let end = 0;
+      ex.events.forEach((e) => { this.tone(e.midi, t0 + e.start * unit, e.dur * unit, e.voice === 0 ? 1 : 0.75); end = Math.max(end, e.start + e.dur); });
+      this.setBtn(btn);
+      this.timer = setTimeout(() => this.stop(), (t0 - this.ctx.currentTime + end * unit) * 1000 + 300);
+    },
+    through(ex, idx, btn) {
+      const same = this.btn === btn;
+      this.stop();
+      if (same || !this.ensure()) return;
+      const unit = 60 / S.tempo / 4, bar = ex.meter.bar, beat = ex.meter.beat;
+      const tStart = this.ctx.currentTime + 0.15;
+      const t0 = tStart + (S.countIn ? bar * unit : 0);
+      if (S.countIn) for (let u = 0; u < bar; u += beat) this.click(tStart + u * unit, u === 0);
+      if (S.ptMetro) for (let b = 0; b < ex.bars; b++) for (let u = 0; u < bar; u += beat) this.click(t0 + (b * bar + u) * unit, u === 0);
+      if (S.ptMusic) ex.events.forEach((e) => this.tone(e.midi, t0 + e.start * unit, e.dur * unit, e.voice === 0 ? 1 : 0.75));
+
+      const systems = ex.systems.map((sy, si) => {
+        const el = $('sys-' + idx + '-' + si);
+        const map = timeMap(el, ex, si);
+        const sweep = document.createElement('div'); sweep.className = 'sweep'; sweep.style.left = map.x0 + 'px'; sweep.style.width = '0'; el.appendChild(sweep);
+        const cur = document.createElement('div'); cur.className = 'cursor'; cur.style.display = 'none'; el.appendChild(cur);
+        return { el, map, sweep, cur };
+      });
+      this.overlays = systems.flatMap((s) => [s.sweep, s.cur]);
+      const wrap = $('exw-' + idx); wrap.classList.add('running'); this.wrap = wrap;
+      const status = $('pt-st-' + idx); this.status = status;
+      this.setBtn(btn);
+      const sysUnits = 4 * bar;
+      let lastSys = -1;
+      const tick = () => {
+        const now = this.ctx.currentTime;
+        if (now < t0) { status.textContent = t('countInN', { n: Math.floor((now - tStart) / (beat * unit)) + 1 }); this.raf = requestAnimationFrame(tick); return; }
+        const u = (now - t0) / unit;
+        if (u > ex.bars * bar + 0.4 / unit) { this.finish(); return; }
+        const si = Math.min(systems.length - 1, Math.floor(u / sysUnits));
+        const local = Math.min(sysUnits, u - si * sysUnits);
+        status.textContent = t('barN', { a: Math.min(ex.bars, Math.floor(u / bar) + 1), b: ex.bars });
+        systems.forEach((s, k) => {
+          if (k < si) { s.cur.style.display = 'none'; s.sweep.style.width = S.ptHideMode === 'off' ? '0' : (s.map.xEnd - s.map.x0) + 'px'; }
+          else if (k > si) { s.cur.style.display = 'none'; s.sweep.style.width = '0'; }
+          else {
+            const x = s.map.at(local);
+            s.cur.style.display = 'block'; s.cur.style.left = x + 'px';
+            let w = 0;
+            if (S.ptHideMode === 'line') w = x - s.map.x0;
+            else if (S.ptHideMode === 'bar') w = s.map.barStartX(Math.floor(local / bar)) - s.map.x0;
+            s.sweep.style.width = Math.max(0, w) + 'px';
+          }
+        });
+        if (si !== lastSys) { lastSys = si; const nx = systems[Math.min(systems.length - 1, si + 1)]; nx.el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+        this.raf = requestAnimationFrame(tick);
+      };
+      this.raf = requestAnimationFrame(tick);
+    },
+    finish() {
+      const st = this.status;
+      this.stop();
+      if (st) { st.textContent = t('done'); setTimeout(() => { if (st.textContent === t('done')) st.textContent = ''; }, 4000); }
+    },
+    stop() {
+      cancelAnimationFrame(this.raf);
+      (this.overlays || []).forEach((m) => m.remove()); this.overlays = [];
+      if (this.wrap) { this.wrap.classList.remove('running'); this.wrap = null; }
+      if (this.status) { this.status.textContent = ''; this.status = null; }
+      clearTimeout(this.timer);
+      this.nodes.forEach((n) => { try { n.stop(); } catch (e) {} });
+      this.nodes = [];
+      if (this.btn) { this.btn.dataset.playing = '0'; this.btn.textContent = this.btn.dataset.mode === 'through' ? t('through') : t('listen'); this.btn = null; }
+    },
+  };
+
+  // ---------- where is each moment of the music on screen? ----------
+  // Builds a time -> x map for one system from the bar lines and the notes the notation library drew.
+  function timeMap(sysEl, ex, si) {
+    const box = sysEl.getBoundingClientRect();
+    const W = box.width, bar = ex.meter.bar, firstBar = si * 4;
+    const rel = (r) => ({ l: r.left - box.left, r: r.right - box.left, c: (r.left + r.right) / 2 - box.left });
+    // bar lines
+    const xs = [...sysEl.querySelectorAll('.abcjs-bar')].map((e) => e.getBoundingClientRect()).filter((r) => r.height > 0).map((r) => rel(r).r).sort((a, b) => a - b);
+    const barEnds = [];
+    xs.forEach((x) => { if (!barEnds.length || x - barEnds[barEnds.length - 1] > 12) barEnds.push(x); else barEnds[barEnds.length - 1] = x; });
+    const noteEls = [...sysEl.querySelectorAll('.abcjs-note, .abcjs-rest')].filter((e) => e.getBoundingClientRect().width > 0);
+    const firstNoteX = noteEls.length ? Math.min(...noteEls.map((e) => rel(e.getBoundingClientRect()).l)) - 6 : W * 0.12;
+    const x0 = Math.max(0, firstNoteX);
+    const anchors = [];
+    if (barEnds.length === 4) {
+      const starts = [x0, barEnds[0], barEnds[1], barEnds[2]];
+      for (let b = 0; b < 4; b++) anchors.push([b * bar, starts[b]]);
+      anchors.push([4 * bar, barEnds[3]]);
+      // note onsets: match each voice's drawn notes (in order) with the generated rhythm
+      const onsetX = {};
+      let matched = false;
+      const voices = ex.voiceOnsets;
+      const byVoice = voices.map((_, vi) => [...sysEl.querySelectorAll('.abcjs-v' + vi + '.abcjs-note, .abcjs-v' + vi + '.abcjs-rest')].filter((e) => e.getBoundingClientRect().width > 0));
+      const expected = voices.map((v) => v.slice(firstBar, firstBar + 4).reduce((a, o) => a + o.length, 0));
+      if (byVoice.every((els, vi) => els.length === expected[vi]) && expected[0] > 0) {
+        matched = true;
+        voices.forEach((v, vi) => {
+          const els = byVoice[vi].map((e) => rel(e.getBoundingClientRect())).sort((a, b) => a.c - b.c);
+          let k = 0;
+          for (let b = 0; b < 4; b++) v[firstBar + b].forEach((off) => { const tt = b * bar + off; const x = els[k++].l - 3; onsetX[tt] = onsetX[tt] === undefined ? x : Math.min(onsetX[tt], x); });
+        });
+      } else {
+        // fallback: cluster drawn notes per bar and match against the bar's onsets
+        for (let b = 0; b < 4; b++) {
+          const lo = b === 0 ? x0 : barEnds[b - 1], hi = barEnds[b];
+          const cs = noteEls.map((e) => rel(e.getBoundingClientRect())).filter((p) => p.c > lo && p.c < hi).sort((a, c) => a.c - c.c);
+          const cl = [];
+          cs.forEach((p) => { const last = cl[cl.length - 1]; if (last && p.c - last.c < 7) { last.l = Math.min(last.l, p.l); } else cl.push({ c: p.c, l: p.l }); });
+          const ons = ex.barOnsets[firstBar + b];
+          if (cl.length === ons.length) ons.forEach((off, i) => { onsetX[b * bar + off] = cl[i].l - 3; });
+        }
+      }
+      Object.keys(onsetX).forEach((k) => { const tt = Number(k); if (tt % bar !== 0 || tt === 0) anchors.push([tt, onsetX[k]]); else anchors.push([tt, Math.max(onsetX[k], anchors.find((a) => a[0] === tt)[1])]); });
+      anchors.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    } else {
+      anchors.push([0, x0], [4 * bar, W - 6]);
+    }
+    // keep it monotonic
+    const A = [];
+    anchors.forEach(([tt, x]) => { if (A.length && tt === A[A.length - 1][0]) { A[A.length - 1][1] = Math.max(A[A.length - 1][1], x); return; } A.push([tt, A.length ? Math.max(x, A[A.length - 1][1]) : x]); });
+    const at = (u) => {
+      if (u <= A[0][0]) return A[0][1];
+      for (let i = 1; i < A.length; i++) if (u <= A[i][0]) { const [t1, x1] = A[i - 1], [t2, x2] = A[i]; return x1 + (x2 - x1) * (u - t1) / (t2 - t1 || 1); }
+      return A[A.length - 1][1];
+    };
+    const barStartX = (b) => at(b * bar);
+    return { at, barStartX, x0, xEnd: A[A.length - 1][1] + 4 };
+  }
+
+  // ---------- sight-reading ----------
+  const keySel = $('sr-key');
+  function fillKeys() {
+    const nm = N();
+    let h = '<option value="auto">' + t('auto') + '</option><optgroup label="' + t('major') + '">';
+    PV.SR_KEYS.filter((k) => !k.minor).forEach((k) => { h += '<option value="' + k.id + '">' + esc(nm.keyName(k.tl, k.ta, false)) + '</option>'; });
+    h += '</optgroup><optgroup label="' + t('minor') + '">';
+    PV.SR_KEYS.filter((k) => k.minor).forEach((k) => { h += '<option value="' + k.id + '">' + esc(nm.keyName(k.tl, k.ta, true)) + '</option>'; });
+    keySel.innerHTML = h + '</optgroup>';
+    keySel.value = S.key;
+  }
+  let currentSet = [];
+  function levelHint() { $('sr-level-hint').textContent = L().blurbs[S.level]; }
+  function syncTempo() { $('sr-tempo').value = S.tempo; $('sr-tempo-v').textContent = '♩ = ' + S.tempo; }
+
+  function renderSR() {
+    Player.stop();
+    const sheet = $('sr-sheet');
+    $('sr-code').value = S.srSeed;
+    currentSet = [];
+    const nEx = 1; // one exercise at a time
+    let html = '<div class="sheet-head"><div><h2>' + t('srTitle') + '</h2><div class="sub">' + t('srSub', { l: S.level, h: L().handsTxt[S.hands], n: S.bars }) + '</div></div><div class="meta">' + t('code') + ' ' + S.srSeed + '</div></div>';
+    html += '<div class="instr no-print" style="color:var(--muted);font-size:13px">' + t('srInstr') + '</div>';
+    for (let i = 0; i < nEx; i++) {
+      html += '<div class="exercise" id="exw-' + i + '"><div class="ex-head"><span class="det" id="ex-det-' + i + '"></span><span class="spacer"></span><span class="pt-status" id="pt-st-' + i + '"></span>' +
+        '<button class="btn small play" data-mode="listen" data-i="' + i + '">' + t('listen') + '</button><button class="btn small play" data-mode="through" data-i="' + i + '">' + t('through') + '</button></div><div class="notation" id="ex-' + i + '"></div></div>';
+    }
+    sheet.innerHTML = html;
+    const nm = N();
+    for (let i = 0; i < nEx; i++) {
+      const ex = PV.sightReading({ level: S.level, hands: S.hands, key: S.key, meter: S.meter, bars: S.bars }, S.srSeed * 10 + i);
+      currentSet.push(ex);
+      $('ex-det-' + i).textContent = nm.keyName(ex.key.tl, ex.key.ta, ex.key.minor) + ' · ' + ex.meterId;
+      const host = $('ex-' + i);
+      ex.systems.forEach((sy, si) => {
+        const d = document.createElement('div'); d.className = 'sys'; d.id = 'sys-' + i + '-' + si; host.appendChild(d);
+        draw(d, sy.abc, { staffwidth: 760, paddingtop: si === 0 ? 12 : 4 });
+      });
+    }
+  }
+  $('sr-sheet').addEventListener('click', (e) => {
+    const b = e.target.closest('.play'); if (!b) return;
+    const i = Number(b.dataset.i);
+    if (b.dataset.mode === 'through') Player.through(currentSet[i], i, b); else Player.play(currentSet[i], b);
+  });
+  $('sr-go').addEventListener('click', () => { S.srSeed = newSeed(); save(); renderSR(); });
+  $('sr-load').addEventListener('click', () => { const v = parseInt($('sr-code').value, 10); if (v > 0) { S.srSeed = v; save(); renderSR(); } });
+  $('sr-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('sr-load').click(); });
+  keySel.addEventListener('change', () => { S.key = keySel.value; save(); renderSR(); });
+  $('sr-meter').addEventListener('change', () => { S.meter = $('sr-meter').value; save(); renderSR(); });
+  $('sr-tempo').addEventListener('input', () => { S.tempo = Number($('sr-tempo').value); syncTempo(); save(); });
+  $('sr-countin').addEventListener('change', () => { S.countIn = $('sr-countin').checked; save(); });
+  $('pt-hide').addEventListener('change', () => { S.ptHideMode = $('pt-hide').value; save(); });
+  [['pt-metro', 'ptMetro'], ['pt-music', 'ptMusic']].forEach(([id, k]) => { $(id).checked = S[k]; $(id).addEventListener('change', () => { S[k] = $(id).checked; save(); }); });
+
+  // ---------- theory worksheet ----------
+  function topicHint() { $('th-topic-hint').textContent = L().info[S.topic][1]; }
+  const promptOf = (q) => L().pk[q.pk] || '';
+  const topicTitle = (tp) => t('t_' + tp);
+  function renderTheory() {
+    const sheet = $('th-sheet');
+    $('th-code').value = S.thSeed;
+    const ws = PV.theoryWorksheet({ topic: S.topic, difficulty: S.diff, clef: S.clef, count: S.qcount, lang: S.lang, noteRange: activeRange() }, S.thSeed);
+    const perItemPrompt = S.topic === 'mixed';
+    let html = '<div class="sheet-head"><div><h2>' + topicTitle(S.topic) + '</h2><div class="sub">' + t(S.diff) + (S.topic === 'keys' || S.topic === 'scales' ? '' : ' · ' + L().clefSub[S.clef]) + '</div></div><div class="meta" id="th-meta"></div></div>';
+    html += '<div class="instr">' + L().info[S.topic][0] + '</div><div class="qgrid">';
+    ws.items.forEach((q, i) => {
+      html += '<div class="q' + (q.wide ? ' wide' : '') + '"><span class="qn">' + (i + 1) + '.</span>' + (perItemPrompt ? '<span class="qp">' + esc(promptOf(q)) + '</span>' : '') +
+        '<div class="notation item-staff blank" id="q-' + i + '"></div>' +
+        '<div class="ans"><span class="a">' + esc(q.answer) + '</span></div></div>';
+    });
+    sheet.innerHTML = html + '</div>';
+    sheet.classList.toggle('show-answers', S.answers);
+    thMeta();
+    ws.items.forEach((q, i) => {
+      const w = q.wide ? 560 : 140;
+      draw($('q-' + i), q.abc, { staffwidth: w }, 1);
+    });
+  }
+  function thMeta() { const m = $('th-meta'); if (m) m.textContent = t('code') + ' ' + S.thSeed + (S.answers ? ' · ' + t('answerKey') : ''); }
+  $('th-topic').addEventListener('change', () => { S.topic = $('th-topic').value; topicHint(); syncRanges(); save(); renderTheory(); });
+  $('th-go').addEventListener('click', () => { S.thSeed = newSeed(); save(); renderTheory(); });
+  $('th-load').addEventListener('click', () => { const v = parseInt($('th-code').value, 10); if (v > 0) { S.thSeed = v; save(); renderTheory(); } });
+  $('th-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('th-load').click(); });
+  $('th-answers').addEventListener('change', () => { S.answers = $('th-answers').checked; save(); $('th-sheet').classList.toggle('show-answers', S.answers); thMeta(); });
+
+  // ---------- note-name range (shared by tasks and exam) ----------
+  if (!S.noteRange || !S.noteRange.treble) S.noteRange = { on: false, treble: [30, 38], bass: [18, 26] };
+  const RANGE_OPTS = { treble: [24, 45], bass: [11, 32] }; // F3–A6, G1–G4 (C4 = 28)
+  const activeRange = () => (S.noteRange.on ? { treble: S.noteRange.treble.slice(), bass: S.noteRange.bass.slice() } : null);
+  const pitchLabel = (dia) => N().note(dia % 7, 0) + Math.floor(dia / 7);
+  function syncRanges() {
+    [['th-range-f', S.clef, S.topic === 'notes' || S.topic === 'mixed'], ['qz-range-f', S.qzClef, S.qzTopics.includes('notes')]].forEach(([id, clef, show]) => {
+      const f = $(id); f.hidden = !show;
+      f.querySelector('.range-on').checked = S.noteRange.on;
+      let h = '';
+      if (S.noteRange.on) {
+        (clef === 'both' ? ['treble', 'bass'] : [clef]).forEach((c) => {
+          const [a, b] = RANGE_OPTS[c];
+          const opts = (sel) => { let o = ''; for (let d = a; d <= b; d++) o += '<option value="' + d + '"' + (d === sel ? ' selected' : '') + '>' + esc(pitchLabel(d)) + '</option>'; return o; };
+          h += '<div class="range-row"><span>' + t(c) + '</span><select data-c="' + c + '" data-i="0">' + opts(S.noteRange[c][0]) + '</select>–<select data-c="' + c + '" data-i="1">' + opts(S.noteRange[c][1]) + '</select></div>';
+        });
+        h += '<div class="hint">' + t('rangeHint') + '</div>';
+      }
+      f.querySelector('.range-rows').innerHTML = h;
+    });
+  }
+  ['th-range-f', 'qz-range-f'].forEach((id) => {
+    const f = $(id);
+    const changed = () => { save(); syncRanges(); if (id === 'th-range-f') renderTheory(); else if (!Q) quizIntro(); };
+    f.querySelector('.range-on').addEventListener('change', (e) => { S.noteRange.on = e.target.checked; changed(); });
+    f.querySelector('.range-rows').addEventListener('change', (e) => {
+      const sel = e.target.closest('select'); if (!sel) return;
+      const r = S.noteRange[sel.dataset.c]; r[Number(sel.dataset.i)] = Number(sel.value);
+      if (r[0] > r[1]) r.reverse();
+      changed();
+    });
+  });
+
+  function applyThMode() {
+    const qz = S.thMode === 'qz';
+    $('th-ws-ctl').hidden = qz; $('th-qz-ctl').hidden = !qz;
+    $('th-sheet').hidden = qz; $('qz-sheet').hidden = !qz;
+    if (!qz && !$('th-sheet').childElementCount) renderTheory();
+    if (qz) { if (!Q) quizIntro(); }
+  }
+
+  // ---------- exam quiz ----------
+  const LETTERS4 = ['A', 'B', 'C', 'D'];
+  let Q = null; // answers are stored as choice indexes, so the language can change mid-exam
+  const fmtTime = (sec) => { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
+  const settingsLine = (s) => s.topics.map((x) => topicTitle(x)).join(', ') + ' · ' + t(s.diff) + ' · ' + s.count + ' ' + t('qQuestions').toLowerCase() + (s.time ? ' · ' + t('minutes', { n: s.time }) : '');
+  const curSettings = () => ({ topics: S.qzTopics.slice(), diff: S.qzDiff, clef: S.qzClef, count: S.qzCount, time: S.qzTime, noteRange: activeRange() });
+  function quizIntro() {
+    $('qz-code').value = S.qzSeed || '';
+    $('qz-sheet').innerHTML = '<div class="sheet-head"><div><h2>' + t('qzTitle') + '</h2><div class="sub">' + esc(settingsLine(curSettings())) + '</div></div></div>' +
+      '<div class="qz-intro"><p>' + t('qzIntro') + (S.qzTime ? t('qzTimed') : '') + '</p><p style="font-size:13px">' + t('qzKeys') + '</p>' +
+      '<button class="btn primary" id="qz-start-big">' + t('startExam') + '</button></div>';
+    $('qz-start-big').onclick = () => startQuiz(newSeed());
+  }
+  function buildItems() { Q.items = PV.quiz({ topics: Q.s.topics, difficulty: Q.s.diff, clef: Q.s.clef, count: Q.s.count, lang: S.lang, noteRange: Q.s.noteRange }, Q.seed).items; }
+  function startQuiz(seed) {
+    if (!S.qzTopics.length) { const d = document.createElement('div'); d.className = 'qz-confirm'; d.textContent = t('chooseTopic'); $('qz-sheet').prepend(d); setTimeout(() => d.remove(), 2500); return; }
+    if (Q) clearInterval(Q.clock);
+    S.qzSeed = seed; save(); $('qz-code').value = seed;
+    Q = { seed, s: curSettings(), idx: 0, startedAt: Date.now(), done: false, confirm: false, reviewAll: false };
+    Q.deadline = Q.s.time ? Date.now() + Q.s.time * 60000 : null;
+    buildItems();
+    Q.answers = Q.items.map(() => null);
+    renderQuiz();
+    Q.clock = setInterval(tickClock, 500);
+  }
+  function tickClock() {
+    if (!Q || Q.done) return;
+    const el = $('qz-clock'); if (!el) return;
+    if (Q.deadline) {
+      const left = (Q.deadline - Date.now()) / 1000;
+      el.textContent = '⏱ ' + t('timeLeft', { t: fmtTime(left) });
+      el.classList.toggle('low', left < 60);
+      if (left <= 0) handIn();
+    } else el.textContent = '⏱ ' + fmtTime((Date.now() - Q.startedAt) / 1000);
+  }
+  const isRight = (i) => Q.answers[i] !== null && Q.items[i].choices[Q.answers[i]] === Q.items[i].answer;
+  function renderQuiz() {
+    if (Q.done) return renderResults();
+    const q = Q.items[Q.idx], n = Q.items.length;
+    const answered = Q.answers.filter((a) => a !== null).length;
+    let h = '<div class="qz-top"><span>' + t('qOf', { a: Q.idx + 1, b: n }) + '</span><div class="bar"><i style="width:' + (answered / n * 100) + '%"></i></div><span>' + t('answered', { n: answered }) + '</span><span class="clock" id="qz-clock"></span></div>';
+    h += '<div class="qz-card"><div class="qz-topic">' + esc(topicTitle(q.topic)) + '</div><div class="qz-prompt">' + esc(promptOf(q)) + '</div>' +
+      '<div class="qz-staff notation' + (q.wide ? ' wide' : '') + '" id="qz-staff"></div><div class="qz-choices">';
+    q.choices.forEach((c, i) => { h += '<button class="qz-choice" data-c="' + i + '" aria-pressed="' + (Q.answers[Q.idx] === i) + '"><kbd>' + LETTERS4[i] + '</kbd><span>' + esc(c) + '</span></button>'; });
+    h += '</div></div><div class="qz-nav"><button class="btn" id="qz-prev"' + (Q.idx === 0 ? ' disabled' : '') + '>' + t('prev') + '</button><div class="qz-dots">';
+    Q.items.forEach((_, i) => { h += '<button data-j="' + i + '" class="' + (Q.answers[i] !== null ? 'done' : '') + (i === Q.idx ? ' here' : '') + '">' + (i + 1) + '</button>'; });
+    h += '</div><button class="btn" id="qz-next"' + (Q.idx === n - 1 ? ' disabled' : '') + '>' + t('next') + '</button></div>';
+    h += '<div class="qz-hand"><button class="btn" id="qz-handin" style="padding:10px 22px">' + t('handIn') + '</button>';
+    if (Q.confirm) {
+      const left = n - answered;
+      h += '<div class="qz-confirm">' + (left ? '<b>' + t('unanswered', { n: left }) + '</b>' + t('unansweredNote') : t('allAnswered')) + t('handInNow') +
+        '<div class="row"><button class="btn" id="qz-keep">' + t('keepWorking') + '</button><button class="btn primary" id="qz-final">' + t('handIn') + '</button></div></div>';
+    }
+    $('qz-sheet').innerHTML = h + '</div>';
+    draw($('qz-staff'), q.abc, { staffwidth: q.wide ? 480 : 170 }, q.wide ? 1.15 : 1.6);
+    tickClock();
+  }
+  function choose(i) {
+    const q = Q.items[Q.idx]; if (!q || i >= q.choices.length) return;
+    const wasEmpty = Q.answers[Q.idx] === null;
+    Q.answers[Q.idx] = i; Q.confirm = false;
+    renderQuiz();
+    if (wasEmpty && Q.idx < Q.items.length - 1) setTimeout(() => { if (Q && !Q.done) { Q.idx++; renderQuiz(); } }, 280);
+  }
+  function go(j) { if (!Q || Q.done) return; Q.idx = Math.max(0, Math.min(Q.items.length - 1, j)); Q.confirm = false; renderQuiz(); }
+  function handIn() { if (!Q || Q.done) return; Q.done = true; Q.usedSec = (Date.now() - Q.startedAt) / 1000; clearInterval(Q.clock); renderResults(); }
+  function gradeOf(p) { const g = L().grades; if (p >= 90) return [g[0], 'g-dist']; if (p >= 80) return [g[1], 'g-merit']; if (p >= 66) return [g[2], 'g-pass']; return [g[3], 'g-fail']; }
+  function renderResults() {
+    const n = Q.items.length;
+    const correct = Q.items.filter((_, i) => isRight(i)).length;
+    const pct = Math.round(correct / n * 100);
+    const [g, gc] = gradeOf(pct);
+    let h = '<div class="sheet-head"><div><h2>' + t('results') + '</h2><div class="sub">' + esc(settingsLine(Q.s)) + '</div></div><div class="meta">' + t('qzCode') + ' ' + Q.seed + '</div></div>';
+    h += '<div class="res-score"><div class="res-big">' + correct + '<small> / ' + n + '</small></div><div><span class="grade ' + gc + '">' + g + ' · ' + t('pct', { n: pct }) + '</span>' +
+      '<div class="res-meta">' + t('timeUsed') + ' ' + fmtTime(Q.usedSec) + (Q.deadline && Q.usedSec >= Q.s.time * 60 - 1 ? t('timeRanOut') : '') + ' · ' + t('thresholds') + '</div></div></div>';
+    const by = {};
+    Q.items.forEach((q, i) => { const b = by[q.topic] || (by[q.topic] = { c: 0, n: 0 }); b.n++; if (isRight(i)) b.c++; });
+    h += '<div class="res-topics">';
+    Object.keys(by).forEach((tp) => { const b = by[tp]; h += '<div class="res-topic"><span>' + esc(topicTitle(tp)) + '</span><div class="bar"><i style="width:' + (b.c / b.n * 100) + '%"></i></div><span>' + b.c + ' / ' + b.n + '</span></div>'; });
+    h += '</div><div class="res-actions no-print"><button class="btn" id="qz-retry">' + t('retry') + '</button><button class="btn" id="qz-new">' + t('newExam') + '</button>' +
+      '<button class="btn" id="qz-toggle">' + (Q.reviewAll ? t('showWrong') : t('showAll')) + '</button></div>';
+    const list = Q.items.map((q, i) => ({ q, i, ok: isRight(i) })).filter((x) => Q.reviewAll || !x.ok);
+    if (!list.length) h += '<p style="color:var(--muted)">' + t('noMistakes') + '</p>';
+    list.forEach(({ q, i, ok }) => {
+      const yours = Q.answers[i] === null ? null : q.choices[Q.answers[i]];
+      h += '<div class="rv' + (q.wide ? ' wide' : '') + '"><div class="rv-n ' + (ok ? 'ok' : 'bad') + '">' + (ok ? '✓' : '✗') + ' ' + (i + 1) + '</div><div class="rv-staff notation item-staff" id="rv-' + i + '"></div><div class="rv-txt"><div style="color:var(--muted)">' + esc(topicTitle(q.topic)) + ' · ' + esc(promptOf(q)) + '</div>' +
+        (ok ? '<span class="right">' + esc(q.answer) + '</span>' : (yours !== null ? t('yourAnswer') + ': <span class="yours">' + esc(yours) + '</span> · ' : '<i>' + t('notAnswered') + '</i> · ') + t('correct') + ': <span class="right">' + esc(q.answer) + '</span>') + '</div></div>';
+    });
+    $('qz-sheet').innerHTML = h;
+    list.forEach(({ q, i }) => draw($('rv-' + i), q.abc, { staffwidth: q.wide ? 480 : 150 }, 1));
+    $('qz-retry').onclick = () => { const s = Q.s; S.qzTopics = s.topics; S.qzDiff = s.diff; S.qzClef = s.clef; S.qzCount = s.count; S.qzTime = s.time; if (s.noteRange) S.noteRange = Object.assign({}, s.noteRange, { on: true }); syncRanges(); startQuiz(Q.seed); };
+    $('qz-new').onclick = () => startQuiz(newSeed());
+    $('qz-toggle').onclick = () => { Q.reviewAll = !Q.reviewAll; renderResults(); };
+  }
+  $('qz-sheet').addEventListener('click', (e) => {
+    if (!Q || Q.done) return;
+    const c = e.target.closest('.qz-choice'); if (c) return choose(Number(c.dataset.c));
+    const d = e.target.closest('.qz-dots button'); if (d) return go(Number(d.dataset.j));
+    const btn = e.target.closest('button'); const id = btn && btn.id;
+    if (id === 'qz-prev') go(Q.idx - 1);
+    else if (id === 'qz-next') go(Q.idx + 1);
+    else if (id === 'qz-handin') { Q.confirm = true; renderQuiz(); }
+    else if (id === 'qz-keep') { Q.confirm = false; renderQuiz(); }
+    else if (id === 'qz-final') handIn();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (S.view !== 'th' || S.thMode !== 'qz' || !Q || Q.done) return;
+    if (e.target.closest('input, select, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key.toUpperCase();
+    if (/^[1-4]$/.test(k)) { e.preventDefault(); choose(Number(k) - 1); }
+    else if (/^[A-D]$/.test(k)) { e.preventDefault(); choose(LETTERS4.indexOf(k)); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(Q.idx - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); go(Q.idx + 1); }
+  });
+  document.querySelectorAll('#qz-topics input').forEach((cb) => {
+    cb.checked = S.qzTopics.includes(cb.value);
+    cb.addEventListener('change', () => { S.qzTopics = [...document.querySelectorAll('#qz-topics input:checked')].map((x) => x.value); save(); syncRanges(); if (!Q) quizIntro(); });
+  });
+  $('qz-time').addEventListener('change', () => { S.qzTime = Number($('qz-time').value); save(); if (!Q) quizIntro(); });
+  $('qz-go').addEventListener('click', () => startQuiz(newSeed()));
+  $('qz-load').addEventListener('click', () => { const v = parseInt($('qz-code').value, 10); if (v > 0) startQuiz(v); });
+  $('qz-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('qz-load').click(); });
+
+  // ---------- language ----------
+  $('lang').addEventListener('change', () => {
+    S.lang = $('lang').value; save();
+    applyStatic();
+    renderSR();
+    if ($('th-sheet').childElementCount) renderTheory();
+    if (Q) { buildItems(); if (Q.done) renderResults(); else renderQuiz(); } else if (S.thMode === 'qz') quizIntro();
+  });
+
+  // ---------- init ----------
+  seg('sr-level', 'level', () => { levelHint(); S.tempo = PV.LEVELS[S.level].bpm; syncTempo(); save(); renderSR(); });
+  seg('sr-hands', 'hands', renderSR);
+  seg('sr-bars', 'bars', renderSR);
+  seg('th-diff', 'diff', renderTheory);
+  seg('th-clef', 'clef', () => { syncRanges(); renderTheory(); });
+  seg('th-count', 'qcount', renderTheory);
+  seg('th-mode', 'thMode', applyThMode);
+  seg('qz-diff', 'qzDiff', () => { if (!Q) quizIntro(); });
+  seg('qz-clef', 'qzClef', () => { syncRanges(); if (!Q) quizIntro(); });
+  seg('qz-count', 'qzCount', () => { if (!Q) quizIntro(); });
+  if (!S.tempo) S.tempo = PV.LEVELS[S.level].bpm;
+  $('lang').value = S.lang;
+  $('sr-meter').value = S.meter; $('th-topic').value = S.topic; $('pt-hide').value = S.ptHideMode; $('qz-time').value = String(S.qzTime);
+  $('sr-countin').checked = S.countIn; $('th-answers').checked = S.answers;
+  applyStatic(); syncTempo();
+
+  document.querySelectorAll('.btn.print').forEach((b) => b.addEventListener('click', () => { Player.stop(); window.print(); }));
+
+  // installable app (home screen on iPad): offline support via the service worker
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+
+  function start() { renderSR(); showView(S.view); }
+  if (abcReady()) start(); else window.addEventListener('load', start);
+})();
+</script>
+</body>
+</html>
