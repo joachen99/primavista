@@ -266,7 +266,7 @@
       <div id="ctl-sr">
     <div class="field">
       <span class="lbl" data-t="level"></span>
-      <div class="seg" id="sr-level"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button></div>
+      <div class="seg" id="sr-level"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button><button data-v="7">7</button></div>
       <div class="hint" id="sr-level-hint"></div>
     </div>
     <div class="field">
@@ -480,24 +480,28 @@
     };
   }
   const SR_KEYS = [];
-  for (const n of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]) SR_KEYS.push(makeKey(n, false));
-  for (const n of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]) SR_KEYS.push(makeKey(n, true));
+  for (const n of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6]) SR_KEYS.push(makeKey(n, false));
+  for (const n of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6]) SR_KEYS.push(makeKey(n, true));
   const keyById = (id) => SR_KEYS.find((k) => k.id === id);
 
   // ---------- sight-reading configuration ----------
+  // lh: left-hand styles (picked per exercise, or per phrase when varyLh) · chordN: notes in LH chords · wide: octave basses,
+  // wide broken chords, notes down to D2 · artic: staccato and accents · turns: hands take turns (never together)
   const LEVELS = {
-    1: { acc: 0, minor: false, meters: ['4/4'], range: [0, 4], five: true, maxLeap: 2, chords: ['I', 'V'], lh: ['roots'], rests: 0, slur: false, dyn: false, bpm: 60,
-         blurb: 'Five-finger position · C major · 4/4 · mostly half and whole notes, steps and thirds' },
+    1: { acc: 0, minor: false, meters: ['4/4'], range: [0, 4], five: true, turns: true, maxLeap: 1, chords: ['I', 'V'], lh: ['roots'], rests: 0, slur: false, dyn: false, bpm: 60,
+         blurb: 'Hands take turns · around middle C · steps only · whole, half and quarter notes' },
     2: { acc: 1, minor: false, meters: ['4/4', '4/4', '3/4'], range: [0, 4], five: true, maxLeap: 2, chords: ['I', 'V'], lh: ['roots'], rests: 0, slur: false, dyn: false, bpm: 66,
          blurb: 'Five-finger position · C, G and F major · whole, half and quarter notes' },
     3: { acc: 2, minor: true, meters: ['4/4', '4/4', '3/4', '2/4'], range: [0, 4], five: true, maxLeap: 3, chords: ['I', 'IV', 'V'], lh: ['roots', 'halves'], rests: 0, slur: true, dyn: true, bpm: 72,
          blurb: 'Five-finger position · up to 2 sharps/flats, minor keys · eighth notes' },
-    4: { acc: 3, minor: true, meters: ['4/4', '4/4', '3/4', '2/4'], range: [-2, 7], five: false, maxLeap: 4, chords: ['I', 'ii', 'IV', 'V', 'vi'], lh: ['halves', 'quarters'], rests: 0.06, slur: true, dyn: true, bpm: 80,
-         blurb: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · broken-chord left hand' },
-    5: { acc: 4, minor: true, meters: ['4/4', '3/4', '2/4', '6/8'], range: [-3, 8], five: false, maxLeap: 5, chords: ['I', 'ii', 'IV', 'V', 'vi'], lh: ['quarters', 'halves'], rests: 0.12, slur: true, dyn: true, bpm: 88,
-         blurb: 'Up to 4 sharps/flats · 6/8 time · rests · leaps up to a sixth' },
-    6: { acc: 5, minor: true, meters: ['4/4', '3/4', '2/4', '6/8'], range: [-4, 9], five: false, maxLeap: 7, chords: ['I', 'ii', 'IV', 'V', 'vi'], lh: ['eighths', 'quarters'], rests: 0.12, slur: true, dyn: true, bpm: 96,
-         blurb: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass · leaps to the octave' },
+    4: { acc: 3, minor: true, meters: ['4/4', '4/4', '3/4', '2/4'], range: [-2, 7], five: false, maxLeap: 4, chords: ['I', 'ii', 'IV', 'V', 'vi'], lh: ['halves', 'quarters', 'oompah', 'oompah'], chordN: 2, rests: 0.06, slur: true, dyn: true, bpm: 80,
+         blurb: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · bass-and-chord and broken-chord left hand' },
+    5: { acc: 4, minor: true, meters: ['4/4', '3/4', '2/4', '6/8'], range: [-3, 8], five: false, maxLeap: 5, chords: ['I', 'ii', 'IV', 'V', 'vi'], lh: ['oompah', 'arp8', 'quarters'], chordN: 3, wide: true, artic: true, varyLh: true, rests: 0.12, slur: true, dyn: true, bpm: 84,
+         blurb: 'Up to 4 sharps/flats · 6/8 time · rests · waltz and oom-pah bass with leaps · wide broken chords in eighths · staccato and accents' },
+    6: { acc: 5, minor: true, meters: ['4/4', '3/4', '2/4', '6/8'], range: [-4, 9], five: false, maxLeap: 7, chords: ['I', 'ii', 'IV', 'V', 'vi', 'V/V'], lh: ['eighths', 'arp8', 'arp16', 'oompah'], chordN: 3, wide: true, artic: true, varyLh: true, rests: 0.12, slur: true, dyn: true, bpm: 80,
+         blurb: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass and sixteenth-note left hand · octave bass · secondary dominant' },
+    7: { acc: 6, minor: true, meters: ['4/4', '3/4', '2/4', '6/8'], range: [-4, 10], five: false, maxLeap: 7, chords: ['I', 'ii', 'IV', 'V', 'vi', 'V/V'], lh: ['arp16', 'arp16', 'eighths', 'arp8', 'oompah'], chordN: 3, wide: true, artic: true, varyLh: true, rests: 0.15, slur: true, dyn: true, bpm: 76,
+         blurb: 'Up to 6 sharps/flats · chromatic notes · busy left hand in sixteenths · wide leaps in both hands' },
   };
 
   const METERS = {
@@ -507,26 +511,26 @@
     '6/8': { bar: 12, beat: 6, beats: 2, compound: true },
   };
 
-  // rhythm cells; durations in sixteenths; w = weight per level 1..6
+  // rhythm cells; durations in sixteenths; w = weight per level 1..7
   const SIMPLE_CELLS = [
-    { d: [4], b: 1, w: [4, 6, 6, 5, 4, 3] },
-    { d: [8], b: 2, w: [5, 3, 3, 2, 1.5, 1] },
-    { d: [12], b: 3, w: [0.4, 1, 1, 0.7, 0.5, 0.3] },
-    { d: [16], b: 4, w: [2, 1, 0.6, 0.3, 0.2, 0.1] },
-    { d: [2, 2], b: 1, w: [0, 0, 1.5, 3, 3, 3] },
-    { d: [6, 2], b: 2, w: [0, 0, 0, 1.2, 1.5, 1.5] },
-    { d: [3, 1], b: 1, w: [0, 0, 0, 0, 0, 1] },
-    { d: [1, 1, 1, 1], b: 1, w: [0, 0, 0, 0, 0, 1] },
-    { d: [2, 1, 1], b: 1, w: [0, 0, 0, 0, 0, 0.8] },
-    { d: [1, 1, 2], b: 1, w: [0, 0, 0, 0, 0, 0.8] },
+    { d: [4], b: 1, w: [4, 6, 6, 5, 4, 3, 2.5] },
+    { d: [8], b: 2, w: [5, 3, 3, 2, 1.5, 1, 0.7] },
+    { d: [12], b: 3, w: [0.4, 1, 1, 0.7, 0.5, 0.3, 0.2] },
+    { d: [16], b: 4, w: [2, 1, 0.6, 0.3, 0.2, 0.1, 0.05] },
+    { d: [2, 2], b: 1, w: [0, 0, 1.5, 3, 3, 3, 3] },
+    { d: [6, 2], b: 2, w: [0, 0, 0, 1.2, 1.5, 1.5, 1.6] },
+    { d: [3, 1], b: 1, w: [0, 0, 0, 0, 0, 1, 1.3] },
+    { d: [1, 1, 1, 1], b: 1, w: [0, 0, 0, 0, 0, 1, 1.6] },
+    { d: [2, 1, 1], b: 1, w: [0, 0, 0, 0, 0, 0.8, 1.1] },
+    { d: [1, 1, 2], b: 1, w: [0, 0, 0, 0, 0, 0.8, 1.1] },
   ];
   const COMPOUND_CELLS = [
-    { d: [6], b: 1, w: [4, 4, 4, 4, 3, 3] },
-    { d: [4, 2], b: 1, w: [3, 3, 3, 3, 3, 3] },
-    { d: [2, 2, 2], b: 1, w: [2, 2, 2, 2, 3, 3] },
-    { d: [12], b: 2, w: [1, 1, 1, 1, 0.7, 0.5] },
-    { d: [2, 2, 1, 1], b: 1, w: [0, 0, 0, 0, 0, 1] },
-    { d: [3, 1, 2], b: 1, w: [0, 0, 0, 0, 0, 1] },
+    { d: [6], b: 1, w: [4, 4, 4, 4, 3, 3, 2.5] },
+    { d: [4, 2], b: 1, w: [3, 3, 3, 3, 3, 3, 3] },
+    { d: [2, 2, 2], b: 1, w: [2, 2, 2, 2, 3, 3, 3] },
+    { d: [12], b: 2, w: [1, 1, 1, 1, 0.7, 0.5, 0.4] },
+    { d: [2, 2, 1, 1], b: 1, w: [0, 0, 0, 0, 0, 1, 1.3] },
+    { d: [3, 1, 2], b: 1, w: [0, 0, 0, 0, 0, 1, 1.2] },
   ];
   const END_PATTERNS = {
     '4/4': [{ c: [[4], [4], [8]], l: 1 }, { c: [[8], [8]], l: 1 }, { c: [[16]], l: 1 }, { c: [[2, 2], [4], [8]], l: 3 }, { c: [[6, 2], [8]], l: 4 }],
@@ -561,13 +565,13 @@
     return cells;
   }
 
-  const CHORD_ROOT = { I: 0, ii: 1, IV: 3, V: 4, vi: 5 };
-  const HALF_T = [['I', 'IV', 'I', 'V'], ['I', 'V', 'I', 'V'], ['I', 'I', 'IV', 'V'], ['I', 'vi', 'IV', 'V'], ['I', 'vi', 'ii', 'V'], ['I', 'IV', 'ii', 'V'], ['I', 'I', 'V', 'V'], ['I', 'I', 'I', 'V']];
-  const AUTH_T = [['I', 'IV', 'V', 'I'], ['I', 'V', 'V', 'I'], ['I', 'vi', 'V', 'I'], ['IV', 'I', 'V', 'I'], ['I', 'ii', 'V', 'I'], ['vi', 'IV', 'V', 'I'], ['I', 'I', 'V', 'I']];
+  const CHORD_ROOT = { I: 0, ii: 1, IV: 3, V: 4, vi: 5, 'V/V': 1 };
+  const HALF_T = [['I', 'IV', 'I', 'V'], ['I', 'V', 'I', 'V'], ['I', 'I', 'IV', 'V'], ['I', 'vi', 'IV', 'V'], ['I', 'vi', 'ii', 'V'], ['I', 'IV', 'ii', 'V'], ['I', 'I', 'V', 'V'], ['I', 'I', 'I', 'V'], ['I', 'IV', 'V/V', 'V'], ['I', 'vi', 'V/V', 'V']];
+  const AUTH_T = [['I', 'IV', 'V', 'I'], ['I', 'V', 'V', 'I'], ['I', 'vi', 'V', 'I'], ['IV', 'I', 'V', 'I'], ['I', 'ii', 'V', 'I'], ['vi', 'IV', 'V', 'I'], ['I', 'I', 'V', 'I'], ['I', 'V/V', 'V', 'I'], ['IV', 'V/V', 'V', 'I']];
   function chordTemplate(r, kind, allowed, minor) {
     const pool = (kind === 'half' ? HALF_T : AUTH_T).filter((t) => t.every((c) => allowed.includes(c)));
     let t = pick(r, pool).slice();
-    if (minor) t = t.map((c) => (c === 'ii' ? 'IV' : c)); // avoid diminished ii in minor
+    if (minor) t = t.map((c) => (c === 'ii' || c === 'V/V' ? 'IV' : c)); // avoid diminished ii (and V/V) in minor
     return t;
   }
   const chordTones = (c) => { const rt = CHORD_ROOT[c]; return [rt, mod7(rt + 2), mod7(rt + 4)]; };
@@ -628,7 +632,7 @@
     // LH accompaniment tonic: five-finger position A2–G3; otherwise D3–A3 (lowest note stays around E2 or above)
     const lhWin = cfg.five ? [19, 25] : [17, 23];
     let lhTonic = key.t + 14; while (lhTonic < lhWin[0]) lhTonic += 7;
-    let lhRange = cfg.five ? [0, 4] : [Math.max(-4, 16 - lhTonic), 7];
+    let lhRange = cfg.five ? [0, 4] : cfg.wide ? [Math.max(-7, 15 - lhTonic), 7] : [Math.max(-4, 16 - lhTonic), 7];
     if (hands === 'both') {
       // keep the hands apart: RH not below D4, LH not touching RH
       const rhFloor = 29 - melTonic;
@@ -642,7 +646,8 @@
     const topLimit = melodyHand === 'rh' ? 40 : 30;
     if (melTonic + melRange[1] > topLimit) melRange[1] = Math.max(topLimit - melTonic, melRange[0] + 4);
     const isV = (bar) => bar.chord === 'V';
-    const raisedFor = (deg, bar) => key.minor && isV(bar) && mod7(deg) === 6;
+    // raised 7th in minor V bars; raised 4th (e.g. F♯ in C major) in V/V bars
+    const raisedFor = (deg, bar) => (key.minor && isV(bar) && mod7(deg) === 6) || (bar.chord === 'V/V' && mod7(deg) === 3);
     const pitch = (tonicDia, deg, bar) => {
       const dia = tonicDia + deg;
       const alter = key.sig[mod7(dia)] + (raisedFor(deg, bar) ? 1 : 0);
@@ -673,7 +678,8 @@
         let deg;
         if (prev === null) {
           const opts = []; for (let d = range[0]; d <= range[1]; d++) if (ct.includes(mod7(d))) opts.push(d);
-          deg = wpick(r, opts, (d) => (mod7(d) === 0 ? 3 : 2) * (cfg.five ? (d === range[0] || d === range[1] ? 1.5 : 1) : 1) / (1 + Math.abs(d - (range[0] + range[1]) / 2) * 0.15));
+          deg = wpick(r, opts, (d) => (mod7(d) === 0 ? 3 : 2) * (cfg.five ? (d === range[0] || d === range[1] ? 1.5 : 1) : 1) / (1 + Math.abs(d - (range[0] + range[1]) / 2) * 0.15) *
+            (cfg.maxLeap === 1 && Math.min(...tonics.map((t) => Math.abs(d - t))) > lastIdx ? 1e-6 : 1));
         } else if (i === lastIdx) {
           // nearest tonic; may sit one step above the range (or below, for one hand) so the line resolves by step instead of leaping a 7th
           const cands = tonics.slice();
@@ -703,6 +709,8 @@
             if (n.dur <= 2 && iv >= 3) w *= 0.35;
             if (n.dur === 1 && iv >= 2) w *= 0.3;
             // leading tone resolves upward to the tonic
+            // raised 4th of a V/V bar resolves up to the 5th
+            if (mod7(prev) === 3 && bars[n._pb] && bars[n._pb].chord === 'V/V') w *= d === prev + 1 ? 8 : 0.2;
             if (mod7(prev) === 6) {
               const strongLT = key.minor && bars[n._pb] && bars[n._pb].chord === 'V';
               if (d === prev + 1) w *= strongLT ? 8 : 2.5; else if (strongLT) w *= 0.25;
@@ -712,8 +720,11 @@
             if (i === lastIdx - 1) {
               const dist = Math.min(...tonics.map((t) => Math.abs(d - t)));
               const fifth = tonics.some((t) => d - t === 4 || d - t === -3);
-              w *= dist === 1 ? 5 : fifth ? 2 : dist === 2 ? 1 : 1e-6; // never leave the last note a 7th from the tonic
+              if (cfg.maxLeap === 1) w *= dist <= 1 ? 5 : 1e-6; // steps-only level: approach the final tonic by step
+              else w *= dist === 1 ? 5 : fifth ? 2 : dist === 2 ? 1 : 1e-6; // never leave the last note a 7th from the tonic
             }
+            // steps-only level: never wander further from the tonic than the notes left can walk back
+            if (cfg.maxLeap === 1) { const dist = Math.min(...tonics.map((t) => Math.abs(d - t))); if (dist > lastIdx - i) w *= 1e-6; }
             // gently pull toward middle of range
             const mid = (range[0] + range[1]) / 2;
             w *= 1 / (1 + Math.max(0, Math.abs(d - mid) - (range[1] - range[0]) / 3) * 0.4);
@@ -732,29 +743,84 @@
 
     // --- left-hand accompaniment ---
     function genAccomp() {
-      const style = pick(r, cfg.lh);
+      let style = pick(r, cfg.lh);
+      const styles = [];
       const out = [];
-      let prevRoot = 0;
+      let prevRoot = 0, prevChordLow = null;
       const inR = (d) => d >= lhRange[0] && d <= lhRange[1];
       bars.forEach((bar, bi) => {
+        if (cfg.varyLh && bar.idx === 0 && bi > 0) style = pick(r, cfg.lh);
         const ct = chordTones(bar.chord);
         const root = CHORD_ROOT[bar.chord];
         const roots = [root, root - 7, root + 7].filter(inR);
         roots.sort((a, b) => Math.abs(a - prevRoot) - Math.abs(b - prevRoot));
         const rt = roots.length ? roots[0] : root;
         prevRoot = rt;
+        // wide levels: bass an octave lower now and then (a leap to read)
+        const lowRt = cfg.wide && inR(rt - 7) && r() < 0.55 ? rt - 7 : rt;
         const tonesInRange = []; for (let d = lhRange[0]; d <= lhRange[1]; d++) if (ct.includes(mod7(d))) tonesInRange.push(d);
         const other = tonesInRange.filter((d) => d !== rt && Math.abs(d - rt) <= 4);
         const fifthNear = other.includes(rt + 4) ? rt + 4 : other.includes(rt - 3) ? rt - 3 : (other[0] ?? rt);
         // triad above root that fits, for broken chords
-        const triadRoot = [rt, rt - 7, rt + 7].filter((x) => x >= lhRange[0] && x + 4 <= lhRange[1]).sort((a, b) => Math.abs(a - rt) - Math.abs(b - rt))[0];
-        let st = style;
-        if (bar.kind === 'final') st = 'final';
-        else if ((st === 'quarters' || st === 'eighths') && triadRoot === undefined) st = 'halves';
+        const triadRoot = [rt, rt - 7, rt + 7, rt - 14].filter((x) => x >= lhRange[0] && x + 4 <= lhRange[1]).sort((a, b) => Math.abs(a - rt) - Math.abs(b - rt))[0];
+        // closed chord of n notes above the bass, moving as little as possible from the previous chord
+        const chordAbove = (bass, n) => {
+          const tones = []; for (let d = bass + 2; d <= lhRange[1]; d++) if (ct.includes(mod7(d))) tones.push(d);
+          let best = null;
+          for (let i = 0; i + n <= tones.length; i++) {
+            const w = tones.slice(i, i + n);
+            if (w[n - 1] - w[0] > 5 || w[0] - bass > 11) continue;
+            const score = Math.abs(w[0] - (prevChordLow === null ? bass + 4 : prevChordLow));
+            if (!best || score < best.s) best = { w, s: score };
+          }
+          if (best) prevChordLow = best.w[0];
+          return best ? best.w : null;
+        };
+        let st = bar.kind === 'final' ? 'final' : style;
         const B = meter.bar;
         let ev;
         const T = triadRoot;
-        if (st === 'final' || st === 'roots') ev = [[rt, B]];
+        if (st === 'oompah') {
+          // chord above the root; if there is no room, use the root an octave lower
+          let bass = null, ch = null;
+          for (const b of [rt, rt - 7]) { if (!inR(b)) continue; ch = chordAbove(b, cfg.chordN || 2); if (ch) { bass = b; break; } }
+          if (!ch) st = 'halves';
+          else {
+            const C = { chord: ch, stac: !!cfg.artic };
+            const lowB = cfg.wide && inR(bass - 7) && r() < 0.55 ? bass - 7 : bass;
+            const alt = cfg.wide && inR(bass - 3) ? bass - 3 : inR(bass + 4) && bass + 4 < ch[0] ? bass + 4 : inR(bass - 3) ? bass - 3 : bass;
+            if (meterId === '4/4') ev = [[lowB, 4], [C, 4], [alt, 4], [C, 4]];
+            else if (meterId === '3/4') ev = [[lowB, 4], [C, 4], [C, 4]];
+            else if (meterId === '2/4') ev = [[lowB, 4], [C, 4]];
+            else ev = [[lowB, 2], [C, 2], [C, 2], [alt, 2], [C, 2], [C, 2]];
+          }
+        }
+        if (st === 'arp8') {
+          // broken chord over more than an octave: root, 5th, octave, 10th
+          // from the root if it fits (root–5th–octave–10th), otherwise an inversion starting on the 3rd or 5th
+          const tones = []; for (let d = lhRange[0]; d <= lhRange[1]; d++) if (ct.includes(mod7(d))) tones.push(d);
+          let u = null;
+          for (const wantRoot of [true, false]) {
+            const starts = tones.map((d, i) => i).filter((i) => i + 4 < tones.length && (mod7(tones[i]) === mod7(root)) === wantRoot);
+            starts.sort((a, b) => Math.abs(tones[a] - lowRt) - Math.abs(tones[b] - lowRt));
+            if (starts.length) { const i = starts[0]; u = [tones[i], tones[i + 2], tones[i + 3], tones[i + 4]]; break; }
+          }
+          if (!u) st = T === undefined ? 'halves' : 'quarters';
+          else {
+            const pat = meterId === '4/4' ? [0, 1, 2, 3, 2, 1, 2, 1] : meterId === '2/4' ? [0, 1, 2, 1] : [0, 1, 2, 3, 2, 1];
+            ev = pat.map((i) => [u[i], 2]);
+          }
+        }
+        if (st === 'arp16') {
+          if (T === undefined) st = 'halves';
+          else if (meter.compound) ev = [0, 4, 2, 4, 2, 4, 0, 4, 2, 4, 2, 4].map((x) => [T + x, 1]);
+          else { ev = []; for (let b = 0; b < meter.beats; b++) [0, 4, 2, 4].forEach((x, i) => ev.push([T + (b % 2 && i === 0 && T + 7 <= lhRange[1] ? 7 : x), 1])); }
+        }
+        if ((st === 'quarters' || st === 'eighths') && T === undefined) st = 'halves';
+        if (st === 'final') {
+          // wide levels end on an octave in the bass
+          ev = [[cfg.wide && inR(rt - 7) ? { chord: [rt - 7, rt] } : rt, B]];
+        } else if (st === 'roots') ev = [[rt, B]];
         else if (st === 'halves') {
           if (meterId === '4/4') ev = [[rt, 8], [fifthNear, 8]];
           else if (meterId === '3/4') ev = [[rt, 8], [fifthNear, 4]];
@@ -765,24 +831,25 @@
           else if (meterId === '3/4') ev = [[T, 4], [T + 2, 4], [T + 4, 4]];
           else if (meterId === '2/4') ev = [[T, 4], [T + 4, 4]];
           else ev = [[T, 4], [T + 4, 2], [T + 2, 4], [T + 4, 2]];
-        } else { // eighths (Alberti)
+        } else if (st === 'eighths') { // Alberti
           const pat = [T, T + 4, T + 2, T + 4];
           const n = B / 2; ev = [];
           for (let i = 0; i < n; i++) ev.push([pat[i % 4], 2]);
           if (meter.compound) ev = [[T, 2], [T + 4, 2], [T + 2, 2], [T + 4, 2], [T + 2, 2], [T + 4, 2]];
         }
+        styles.push(st);
         // group into cells by beat for beaming
         const cells = []; let cur = [], acc = 0;
         const grp = meter.beat;
         ev.forEach(([d, dur]) => {
-          cur.push({ deg: d, dur });
+          cur.push(typeof d === 'number' ? { deg: d, dur } : { chord: d.chord, stac: d.stac, dur });
           acc += dur;
           if (acc % grp === 0) { cells.push(cur); cur = []; }
         });
         if (cur.length) cells.push(cur);
         out.push(cells);
       });
-      return { style, bars: out };
+      return { style: styles[0], styles, bars: out };
     }
 
     // --- build voices ---
@@ -797,24 +864,41 @@
       bars.forEach((bar, bi) => {
         bar.cells.forEach((cell, ci) => {
           const c = [];
-          cell.forEach(() => { const n = notes[ni++]; c.push(n.rest ? { rest: true, dur: n.dur } : { deg: n.deg, dur: n.dur }); });
+          cell.forEach(() => { const n = notes[ni++]; c.push(n.rest ? { rest: true, dur: n.dur } : { deg: n.deg, dur: n.dur, stac: bar._stac && n.dur <= 4 && n.off + n.dur < meter.bar, accent: bar._accent && n.off === 0 }); });
           out[bi].push(c);
         });
       });
       return out;
     }
+    // staccato and accents (reading demands): one bar of staccato and/or one accented downbeat in some phrases
+    if (cfg.artic) for (let p = 0; p < nPhr; p++) {
+      const ph = bars.filter((b) => b.phrase === p);
+      if (r() < 0.5 && ph[1] && ph[1].rests.size === 0) { ph[1]._stac = true; ph.forEach((b) => { b._noSlur = true; }); }
+      if (r() < 0.4 && ph[2]) ph[2]._accent = true;
+    }
     const melBars = melodyToBars(mel, melTonic, melodyHand, melRange);
     const melVoice = { id: melodyHand === 'rh' ? 'RH' : 'LH', clef: melodyHand === 'rh' ? 'treble' : 'bass', tonic: melTonic, bars: melBars, melody: true, range: melRange, hand: melodyHand };
     let accVoice = null, accStyle = null;
-    if (hands === 'both') {
+    const restBar = () => [[{ rest: true, dur: meter.bar }]];
+    if (hands === 'both' && cfg.turns) {
+      // level 1: the hands take turns, two bars each, never together; both around middle C (C position: an octave apart)
+      const rhT = 28 + key.t, lhT = key.t === 0 ? 28 : rhT - 7, lhR = key.t === 0 ? [-4, 0] : [0, 4];
+      const rhBars = melodyToBars(genMelody(rhT, [0, 4]), rhT, 'rh', [0, 4]);
+      const lhBars = melodyToBars(genMelody(lhT, lhR), lhT, 'lh', lhR);
+      const rhTurn = (bi) => bars[bi].idx < 2;
+      voices.push({ id: 'RH', clef: 'treble', tonic: rhT, bars: bars.map((_, bi) => (rhTurn(bi) ? rhBars[bi] : restBar())), melody: true, range: [0, 4], hand: 'rh' });
+      voices.push({ id: 'LH', clef: 'bass', tonic: lhT, bars: bars.map((_, bi) => (rhTurn(bi) ? restBar() : lhBars[bi])), melody: true, range: lhR, hand: 'lh' });
+      accStyle = 'turns';
+    } else if (hands === 'both') {
       const a = genAccomp();
-      accStyle = a.style;
+      accStyle = a.styles.join(',');
       accVoice = { id: 'LH', clef: 'bass', tonic: lhTonic, bars: a.bars, melody: false, range: lhRange, hand: 'lh' };
       voices.push(melVoice, accVoice);
     } else voices.push(melVoice);
 
     // --- ABC rendering + playback events ---
     const events = [];
+    const dynDone = {};
     function voiceToAbc(v, vi) {
       const barStrs = [];
       let first = true;
@@ -831,8 +915,20 @@
           let s = '';
           cell.forEach((n, ni) => {
             let tok = '';
-            if (n.rest) tok = 'z' + (n.dur === 1 ? '' : n.dur);
-            else {
+            const durStr = n.dur === 1 ? '' : String(n.dur);
+            if (n.rest) { tok = 'z' + durStr; if (n.dur === meter.bar) first = true; }
+            else if (n.chord) {
+              let inner = '';
+              n.chord.forEach((dg) => {
+                const p = pitch(v.tonic, dg, bar);
+                const k = String(p.dia), cur = k in accState ? accState[k] : key.sig[mod7(p.dia)];
+                if (p.alter !== cur) { inner += ACC_ABC[p.alter]; accState[k] = p.alter; }
+                inner += abcLetter(p.dia);
+                events.push({ voice: vi, start: bi * meter.bar + off, dur: n.stac ? n.dur * 0.5 : n.dur, midi: p.midi });
+              });
+              tok = (n.stac ? '.' : '') + '[' + inner + ']' + durStr;
+              first = false;
+            } else {
               const p = pitch(v.tonic, n.deg, bar);
               const keyAlt = key.sig[mod7(p.dia)];
               const k = String(p.dia);
@@ -841,12 +937,13 @@
               if (p.alter !== cur) { acc = ACC_ABC[p.alter]; accState[k] = p.alter; }
               let deco = '';
               if (first) {
-                if (dynamic && (v.melody)) deco += '!' + dynamic + '!';
+                if (dynamic && v.melody && !dynDone[vi]) { deco += '!' + dynamic + '!'; dynDone[vi] = true; }
                 if (cfg.five) deco += '!' + fingerOf(n.deg, v.hand, v.range) + '!';
                 first = false;
               }
-              tok = deco + acc + abcLetter(p.dia) + (n.dur === 1 ? '' : n.dur);
-              events.push({ voice: vi, start: bi * meter.bar + off, dur: n.dur, midi: p.midi });
+              if (n.accent) deco += '!accent!';
+              tok = deco + (n.stac ? '.' : '') + acc + abcLetter(p.dia) + durStr;
+              events.push({ voice: vi, start: bi * meter.bar + off, dur: n.stac ? n.dur * 0.5 : n.dur, midi: p.midi, vel: n.accent ? 1.25 : 1 });
             }
             n._tok = tok;
             s += tok;
@@ -861,7 +958,7 @@
       if (v.melody && cfg.slur) {
         for (let p = 0; p < nPhr; p++) {
           const idxs = bars.map((b, i) => (b.phrase === p ? i : -1)).filter((i) => i >= 0);
-          if (bars.some((b, i) => idxs.includes(i) && b.rests.size > 0)) continue;
+          if (bars.some((b, i) => idxs.includes(i) && (b.rests.size > 0 || b._noSlur))) continue;
           const fb = idxs[0], lb = idxs[idxs.length - 1];
           barStrs[fb] = '(' + barStrs[fb];
           barStrs[lb] = barStrs[lb] + ')';
@@ -1223,7 +1320,7 @@
       handsTxt: { both: 'Hands together', rh: 'Right hand', lh: 'Left hand' }, srSub: 'Level {l} · {h} · {n} bars', code: 'Code',
       srInstr: 'Before playing: name the key and time signature, find the highest and lowest notes, and tap the rhythm once.',
       listen: 'Listen', through: 'Play-through', stop: 'Stop', countInN: 'Count-in {n}', barN: 'Bar {a} / {b}', done: 'Done ✓',
-      blurbs: { 1: 'Five-finger position · C major · 4/4 · mostly half and whole notes, steps and thirds', 2: 'Five-finger position · C, G and F major · whole, half and quarter notes', 3: 'Five-finger position · up to 2 sharps/flats, minor keys · eighth notes', 4: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · broken-chord left hand', 5: 'Up to 4 sharps/flats · 6/8 time · rests · leaps up to a sixth', 6: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass · leaps to the octave' },
+      blurbs: { 1: 'Hands take turns, never together · around middle C · steps only · whole, half and quarter notes', 2: 'Five-finger position · C, G and F major · whole, half and quarter notes', 3: 'Five-finger position · up to 2 sharps/flats, minor keys · eighth notes', 4: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · bass-and-chord and broken-chord left hand', 5: 'Up to 4 sharps/flats · 6/8 time · rests · waltz and oom-pah bass with leaps · wide broken chords in eighths · staccato and accents', 6: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass and sixteenth-note left hand · octave bass · secondary dominant', 7: 'Up to 6 sharps/flats · chromatic notes · busy left hand in sixteenths · wide leaps in both hands' },
       thTitle: 'Theory', modeWs: 'Tasks', modeQz: 'Exam', topic: 'Topic', topics: 'Topics',
       t_notes: 'Note names', t_intervals: 'Intervals', t_keys: 'Keys', t_triads: 'Triads', t_scales: 'Scales', t_mixed: 'Mixed',
       difficulty: 'Difficulty', easy: 'Easy', medium: 'Medium', hard: 'Hard', clef: 'Clef', treble: 'Treble', bass: 'Bass', questions: 'Tasks', qQuestions: 'Questions',
@@ -1261,7 +1358,7 @@
       handsTxt: { both: 'Begge hender', rh: 'Høyre hånd', lh: 'Venstre hånd' }, srSub: 'Nivå {l} · {h} · {n} takter', code: 'Kode',
       srInstr: 'Før du spiller: Finn toneart og taktart, finn høyeste og laveste tone, og klapp rytmen én gang.',
       listen: 'Lytt', through: 'Spill gjennom', stop: 'Stopp', countInN: 'Inntelling {n}', barN: 'Takt {a} / {b}', done: 'Ferdig ✓',
-      blurbs: { 1: 'Femfingerposisjon · C-dur · 4/4 · mest halv- og helnoter, trinn og terser', 2: 'Femfingerposisjon · C-, G- og F-dur · hel-, halv- og fjerdedelsnoter', 3: 'Femfingerposisjon · opptil 2 ♯/♭, molltonearter · åttendedeler', 4: 'Posisjonsskifter · opptil 3 ♯/♭ · punkterte rytmer · brutte akkorder i venstre hånd', 5: 'Opptil 4 ♯/♭ · 6/8-takt · pauser · sprang opptil sekst', 6: 'Opptil 5 ♯/♭ · sekstendedeler · Alberti-bass · sprang opptil oktav' },
+      blurbs: { 1: 'Hendene spiller annenhver gang, aldri samtidig · rundt midtre C · bare trinn · hel-, halv- og fjerdedelsnoter', 2: 'Femfingerposisjon · C-, G- og F-dur · hel-, halv- og fjerdedelsnoter', 3: 'Femfingerposisjon · opptil 2 ♯/♭, molltonearter · åttendedeler', 4: 'Posisjonsskifter · opptil 3 ♯/♭ · punkterte rytmer · bass og akkord og brutte akkorder i venstre hånd', 5: 'Opptil 4 ♯/♭ · 6/8-takt · pauser · vals- og «um-pa»-bass med sprang · brede brutte akkorder i åttendedeler · staccato og aksenter', 6: 'Opptil 5 ♯/♭ · sekstendedeler · Alberti-bass og sekstendeler i venstre hånd · oktavbass · dobbeldominant', 7: 'Opptil 6 ♯/♭ · kromatikk · travel venstre hånd i sekstendeler · store sprang i begge hender' },
       thTitle: 'Teori', modeWs: 'Oppgaver', modeQz: 'Prøve', topic: 'Emne', topics: 'Emner',
       t_notes: 'Notenavn', t_intervals: 'Intervaller', t_keys: 'Tonearter', t_triads: 'Treklanger', t_scales: 'Skalaer', t_mixed: 'Blandet',
       difficulty: 'Vanskelighetsgrad', easy: 'Lett', medium: 'Middels', hard: 'Vanskelig', clef: 'Nøkkel', treble: 'G-nøkkel', bass: 'F-nøkkel', questions: 'Oppgaver', qQuestions: 'Spørsmål',
@@ -1459,7 +1556,7 @@
       let t0 = this.ctx.currentTime + 0.12;
       if (S.countIn) { for (let u = 0; u < ex.meter.bar; u += ex.meter.beat) this.click(t0 + u * unit, u === 0); t0 += ex.meter.bar * unit; }
       let end = 0;
-      ex.events.forEach((e) => { this.tone(e.midi, t0 + e.start * unit, e.dur * unit, e.voice === 0 ? 1 : 0.75); end = Math.max(end, e.start + e.dur); });
+      ex.events.forEach((e) => { this.tone(e.midi, t0 + e.start * unit, e.dur * unit, (e.voice === 0 ? 1 : 0.75) * (e.vel || 1)); end = Math.max(end, e.start + e.dur); });
       this.setBtn(btn);
       this.timer = setTimeout(() => this.stop(), (t0 - this.ctx.currentTime + end * unit) * 1000 + 300);
     },
@@ -1472,7 +1569,7 @@
       const t0 = tStart + (S.countIn ? bar * unit : 0);
       if (S.countIn) for (let u = 0; u < bar; u += beat) this.click(tStart + u * unit, u === 0);
       if (S.ptMetro) for (let b = 0; b < ex.bars; b++) for (let u = 0; u < bar; u += beat) this.click(t0 + (b * bar + u) * unit, u === 0);
-      if (S.ptMusic) ex.events.forEach((e) => this.tone(e.midi, t0 + e.start * unit, e.dur * unit, e.voice === 0 ? 1 : 0.75));
+      if (S.ptMusic) ex.events.forEach((e) => this.tone(e.midi, t0 + e.start * unit, e.dur * unit, (e.voice === 0 ? 1 : 0.75) * (e.vel || 1)));
 
       const systems = ex.systems.map((sy, si) => {
         const el = $('sys-' + idx + '-' + si);

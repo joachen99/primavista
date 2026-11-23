@@ -1,10 +1,12 @@
 const PV = require('../gen.js');
 const { midiOf, mod7 } = PV._internal;
 let fails = 0, total = 0;
-const fail = (msg, ex) => { fails++; if (fails < 25) console.log('FAIL', msg, ex ? ex.abc.slice(0, 400) : ''); };
+const failKinds = {};
+const fail = (msg, ex) => { fails++; const k = msg.replace(/-?\d+/g, '#'); failKinds[k] = (failKinds[k] || 0) + 1; if (fails < 25) console.log('FAIL', msg, ex ? ex.abc.slice(0, 400) : ''); };
 const stats = { intervals: {}, keys: {}, meters: {}, endDeg: {}, styles: {} };
 
-for (let level = 1; level <= 6; level++) {
+for (let level = 1; level <= 7; level++) {
+  const turns = !!PV.LEVELS[level].turns;
   for (const hands of ['both', 'rh', 'lh']) {
     for (const bars of [4, 8, 12, 16]) {
       for (let s = 0; s < 150; s++) {
@@ -18,15 +20,28 @@ for (let level = 1; level <= 6; level++) {
         ex._debug.voices.forEach((v) => v.bars.forEach((cells, bi) => {
           const sum = cells.flat().reduce((a, n) => a + n.dur, 0);
           if (sum !== m.bar) fail(`bar dur L${level} ${hands} bar${bi} sum ${sum}`, ex);
-          cells.flat().forEach((n) => { if (!n.rest && (n.deg === undefined || Number.isNaN(n.deg))) fail('undefined deg', ex); });
+          cells.flat().forEach((n) => { if (!n.rest && !n.chord && (n.deg === undefined || Number.isNaN(n.deg))) fail('undefined deg', ex); if (n.chord && n.chord.some((d) => Number.isNaN(d) || d === undefined)) fail('bad chord', ex); });
         }));
         // melody intervals
-        const melEv = ex.events.filter((e) => e.voice === 0).sort((a, b) => a.start - b.start);
-        for (let i = 1; i < melEv.length; i++) {
-          const d = Math.abs(melEv[i].midi - melEv[i - 1].midi);
-          stats.intervals[d] = (stats.intervals[d] || 0) + 1;
-          if (d === 6 || d > 12 || d === 10 || d === 11) fail(`bad leap ${d} L${level}`, ex);
+        // melodic lines: voice 0, or (hands taking turns) each hand's line separately
+        const lines = turns && hands === 'both' ? [0, 1] : [0];
+        lines.forEach((vi) => {
+          const ev = ex.events.filter((e) => e.voice === vi).sort((a, b) => a.start - b.start);
+          for (let i = 1; i < ev.length; i++) {
+            const d = Math.abs(ev[i].midi - ev[i - 1].midi);
+            const joined = ev[i].start === ev[i - 1].start + ev[i - 1].dur; // not across a rest
+            if (turns && hands === 'both' && !joined) continue; // a new turn after two bars' rest is not a leap
+            stats.intervals[d] = (stats.intervals[d] || 0) + 1;
+            if (d === 6 || d > 12 || d === 10 || d === 11) fail(`bad leap ${d} L${level}`, ex);
+            if (turns && joined && d > 2) fail(`level 1 must move by step, got ${d} (${hands})`, ex);
+          }
+        });
+        if (turns && hands === 'both') {
+          // never both hands at once
+          const on = {}; ex.events.forEach((e) => { (on[e.start] = on[e.start] || new Set()).add(e.voice); });
+          if (Object.values(on).some((v) => v.size > 1)) fail('hands sound together at level 1', ex);
         }
+        const melEv = (turns && hands === 'both' ? ex.events.slice() : ex.events.filter((e) => e.voice === 0)).sort((a, b) => a.start - b.start);
         // ends on tonic
         const last = melEv[melEv.length - 1];
         const tonicPc = (midiOf(ex.key.t, ex.key.sig[ex.key.t]) % 12 + 12) % 12;
@@ -34,7 +49,7 @@ for (let level = 1; level <= 6; level++) {
         const pen = melEv[melEv.length - 2];
         const pd = last.midi - pen.midi; stats.endDeg[pd] = (stats.endDeg[pd] || 0) + 1;
         // ranges / hands apart
-        if (hands === 'both') {
+        if (hands === 'both' && !turns) {
           const rhMin = Math.min(...ex.events.filter((e) => e.voice === 0).map((e) => e.midi));
           const lhMax = Math.max(...ex.events.filter((e) => e.voice === 1).map((e) => e.midi));
           if (lhMax >= rhMin) fail(`hands overlap rhMin ${rhMin} lhMax ${lhMax} L${level}`, ex);
@@ -45,22 +60,24 @@ for (let level = 1; level <= 6; level++) {
         if (hands !== 'lh') { const mx = Math.max(...melEv.map((e) => e.midi)); if (mx > 84) fail('RH too high ' + mx, ex); }
         // ABC sanity
         const body = ex.abc.split('\n').filter((l) => l && !/^[A-Z]:|^%%/.test(l));
-        const lines = body.length;
         const expLines = (bars / 4) * (hands === 'both' ? 2 : 1);
-        if (lines !== expLines) fail(`lines ${lines} vs ${expLines}`, ex);
+        if (body.length !== expLines) fail(`lines ${body.length} vs ${expLines}`, ex);
         if (/undefined|NaN|null/.test(ex.abc)) fail('bad token', ex);
         const open = (ex.abc.match(/\(/g) || []).length, close = (ex.abc.match(/\)/g) || []).length;
         if (open !== close) fail('slur mismatch', ex);
         body.forEach((l) => {
           const clean = l.replace(/^\[V:(RH|LH)\] /, '');
-          const toks = clean.split(/[\s|\]]+/).filter(Boolean);
-          toks.forEach((t) => { if (!/^\(?(!(p|mp|mf|[1-5])!)*((\^\^|__|[_^=])?[A-Ga-g][,']*\d*|z\d*)+\)?$/.test(t)) fail('token ' + t, ex); });
+          const toks = clean.replace(/\|\]/g, ' ').replace(/\|/g, ' ').split(/\s+/).filter(Boolean);
+          const NOTE = "(\\^\\^|__|[_^=])?[A-Ga-g][,']*";
+          const TOK = new RegExp('^\\(?((!(p|mp|mf|[1-5]|accent)!)*\\.?(' + NOTE + '|\\[(' + NOTE + ')+\\]|z)\\d*)+\\)?$');
+          toks.forEach((t) => { if (!TOK.test(t)) fail('token ' + t, ex); });
         });
       }
     }
   }
 }
 console.log(`sight-reading: ${total} exercises, ${fails} failures`);
+if (fails) console.log('failure kinds', failKinds);
 console.log('melodic interval semitone histogram', stats.intervals);
 console.log('penultimate->final semitones', stats.endDeg);
 console.log('meters', stats.meters);

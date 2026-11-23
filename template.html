@@ -266,7 +266,7 @@
       <div id="ctl-sr">
     <div class="field">
       <span class="lbl" data-t="level"></span>
-      <div class="seg" id="sr-level"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button></div>
+      <div class="seg" id="sr-level"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button><button data-v="7">7</button></div>
       <div class="hint" id="sr-level-hint"></div>
     </div>
     <div class="field">
@@ -436,7 +436,7 @@
       handsTxt: { both: 'Hands together', rh: 'Right hand', lh: 'Left hand' }, srSub: 'Level {l} · {h} · {n} bars', code: 'Code',
       srInstr: 'Before playing: name the key and time signature, find the highest and lowest notes, and tap the rhythm once.',
       listen: 'Listen', through: 'Play-through', stop: 'Stop', countInN: 'Count-in {n}', barN: 'Bar {a} / {b}', done: 'Done ✓',
-      blurbs: { 1: 'Five-finger position · C major · 4/4 · mostly half and whole notes, steps and thirds', 2: 'Five-finger position · C, G and F major · whole, half and quarter notes', 3: 'Five-finger position · up to 2 sharps/flats, minor keys · eighth notes', 4: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · broken-chord left hand', 5: 'Up to 4 sharps/flats · 6/8 time · rests · leaps up to a sixth', 6: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass · leaps to the octave' },
+      blurbs: { 1: 'Hands take turns, never together · around middle C · steps only · whole, half and quarter notes', 2: 'Five-finger position · C, G and F major · whole, half and quarter notes', 3: 'Five-finger position · up to 2 sharps/flats, minor keys · eighth notes', 4: 'Shifting positions · up to 3 sharps/flats · dotted rhythms · bass-and-chord and broken-chord left hand', 5: 'Up to 4 sharps/flats · 6/8 time · rests · waltz and oom-pah bass with leaps · wide broken chords in eighths · staccato and accents', 6: 'Up to 5 sharps/flats · sixteenth notes · Alberti bass and sixteenth-note left hand · octave bass · secondary dominant', 7: 'Up to 6 sharps/flats · chromatic notes · busy left hand in sixteenths · wide leaps in both hands' },
       thTitle: 'Theory', modeWs: 'Tasks', modeQz: 'Exam', topic: 'Topic', topics: 'Topics',
       t_notes: 'Note names', t_intervals: 'Intervals', t_keys: 'Keys', t_triads: 'Triads', t_scales: 'Scales', t_mixed: 'Mixed',
       difficulty: 'Difficulty', easy: 'Easy', medium: 'Medium', hard: 'Hard', clef: 'Clef', treble: 'Treble', bass: 'Bass', questions: 'Tasks', qQuestions: 'Questions',
@@ -474,7 +474,7 @@
       handsTxt: { both: 'Begge hender', rh: 'Høyre hånd', lh: 'Venstre hånd' }, srSub: 'Nivå {l} · {h} · {n} takter', code: 'Kode',
       srInstr: 'Før du spiller: Finn toneart og taktart, finn høyeste og laveste tone, og klapp rytmen én gang.',
       listen: 'Lytt', through: 'Spill gjennom', stop: 'Stopp', countInN: 'Inntelling {n}', barN: 'Takt {a} / {b}', done: 'Ferdig ✓',
-      blurbs: { 1: 'Femfingerposisjon · C-dur · 4/4 · mest halv- og helnoter, trinn og terser', 2: 'Femfingerposisjon · C-, G- og F-dur · hel-, halv- og fjerdedelsnoter', 3: 'Femfingerposisjon · opptil 2 ♯/♭, molltonearter · åttendedeler', 4: 'Posisjonsskifter · opptil 3 ♯/♭ · punkterte rytmer · brutte akkorder i venstre hånd', 5: 'Opptil 4 ♯/♭ · 6/8-takt · pauser · sprang opptil sekst', 6: 'Opptil 5 ♯/♭ · sekstendedeler · Alberti-bass · sprang opptil oktav' },
+      blurbs: { 1: 'Hendene spiller annenhver gang, aldri samtidig · rundt midtre C · bare trinn · hel-, halv- og fjerdedelsnoter', 2: 'Femfingerposisjon · C-, G- og F-dur · hel-, halv- og fjerdedelsnoter', 3: 'Femfingerposisjon · opptil 2 ♯/♭, molltonearter · åttendedeler', 4: 'Posisjonsskifter · opptil 3 ♯/♭ · punkterte rytmer · bass og akkord og brutte akkorder i venstre hånd', 5: 'Opptil 4 ♯/♭ · 6/8-takt · pauser · vals- og «um-pa»-bass med sprang · brede brutte akkorder i åttendedeler · staccato og aksenter', 6: 'Opptil 5 ♯/♭ · sekstendedeler · Alberti-bass og sekstendeler i venstre hånd · oktavbass · dobbeldominant', 7: 'Opptil 6 ♯/♭ · kromatikk · travel venstre hånd i sekstendeler · store sprang i begge hender' },
       thTitle: 'Teori', modeWs: 'Oppgaver', modeQz: 'Prøve', topic: 'Emne', topics: 'Emner',
       t_notes: 'Notenavn', t_intervals: 'Intervaller', t_keys: 'Tonearter', t_triads: 'Treklanger', t_scales: 'Skalaer', t_mixed: 'Blandet',
       difficulty: 'Vanskelighetsgrad', easy: 'Lett', medium: 'Middels', hard: 'Vanskelig', clef: 'Nøkkel', treble: 'G-nøkkel', bass: 'F-nøkkel', questions: 'Oppgaver', qQuestions: 'Spørsmål',
@@ -672,7 +672,7 @@
       let t0 = this.ctx.currentTime + 0.12;
       if (S.countIn) { for (let u = 0; u < ex.meter.bar; u += ex.meter.beat) this.click(t0 + u * unit, u === 0); t0 += ex.meter.bar * unit; }
       let end = 0;
-      ex.events.forEach((e) => { this.tone(e.midi, t0 + e.start * unit, e.dur * unit, e.voice === 0 ? 1 : 0.75); end = Math.max(end, e.start + e.dur); });
+      ex.events.forEach((e) => { this.tone(e.midi, t0 + e.start * unit, e.dur * unit, (e.voice === 0 ? 1 : 0.75) * (e.vel || 1)); end = Math.max(end, e.start + e.dur); });
       this.setBtn(btn);
       this.timer = setTimeout(() => this.stop(), (t0 - this.ctx.currentTime + end * unit) * 1000 + 300);
     },
@@ -685,7 +685,7 @@
       const t0 = tStart + (S.countIn ? bar * unit : 0);
       if (S.countIn) for (let u = 0; u < bar; u += beat) this.click(tStart + u * unit, u === 0);
       if (S.ptMetro) for (let b = 0; b < ex.bars; b++) for (let u = 0; u < bar; u += beat) this.click(t0 + (b * bar + u) * unit, u === 0);
-      if (S.ptMusic) ex.events.forEach((e) => this.tone(e.midi, t0 + e.start * unit, e.dur * unit, e.voice === 0 ? 1 : 0.75));
+      if (S.ptMusic) ex.events.forEach((e) => this.tone(e.midi, t0 + e.start * unit, e.dur * unit, (e.voice === 0 ? 1 : 0.75) * (e.vel || 1)));
 
       const systems = ex.systems.map((sy, si) => {
         const el = $('sys-' + idx + '-' + si);
