@@ -22,16 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Build
-        run: python3 build.py
-      - name: Test
-        run: node tests/test_generators.js | tee test.log && ! grep -E "[1-9][0-9]* failures" test.log
-      - name: Collect site files
-        run: |
-          mkdir _site
-          cp index.html sw.js manifest.webmanifest _site/
-          cp -r icons _site/
-          mkdir _site/fonts && cp fonts/*.woff2 fonts/*-OFL.txt _site/fonts/
+      - name: Build, test and collect the app files
+        run: python3 build.py --site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

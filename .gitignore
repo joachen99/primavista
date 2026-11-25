@@ -7,3 +7,4 @@ __pycache__/
 # local notes and tool settings (repo is public)
 CLAUDE.md
 .claude/
+_site/
